@@ -1,0 +1,126 @@
+.container-fluid {
+  background-color: #f4f4f4;
+  padding-right: 0px;
+  padding-left: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  height: 100vh;
+}
+
+header {
+  height: 50px;
+  background-color: #4a69bd;
+  text-align: center;
+  color: white;
+  margin-bottom: 10px;
+  padding-top: 5px;
+}
+
+.card {
+  width: 50%;
+  height: 89vh;
+  margin: auto;
+  box-shadow: 5px 5px rgba(206, 200, 200, 0.974);
+}
+
+.card .options {
+  height: 10vh;
+  border: 1px solid black;
+}
+
+.card-body .form-btn,
+.remove-btn,
+.finish-btn {
+  background-color: #4a69bd;
+  color: white;
+  width: 200px;
+  font-weight: 500;
+}
+
+.card-body .btn-outlined {
+  background-color: white;
+  color: #4a69bd;
+  width: 60px;
+  border: 1px solid #4a69bd;
+  font-weight: 500;
+}
+
+.card-body .btn-outlined:disabled {
+  background-color: white;
+  color: #555;
+  width: 60px;
+  border: 1px solid #555;
+  font-weight: 500;
+}
+
+.card-body .form-btn:hover,
+.remove-btn:hover,
+.finish-btn:hover {
+  background-color: white;
+  color: #4a69bd;
+  border: 1px solid #4a69bd;
+}
+
+.table-list {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin: 5px;
+  height: 66vh;
+  border: 1px solid #4a69bd;
+  border-radius: 5px;
+  padding: 10px 25px 10px 25px;
+}
+
+.item-table-list {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin: 5px;
+  height: 73vh;
+  border: 1px solid #4a69bd;
+  border-radius: 5px;
+  padding: 10px 25px 10px 25px;
+}
+
+.hidden {
+  display: none;
+}
+
+table tbody tr {
+  background-color: #f4f4f4;
+  margin-bottom: 10px;
+  font-size: large;
+  font-weight: 500;
+}
+
+.search-input:focus {
+  box-shadow: 0 0.5px 0.5px rgba(0, 0, 0, 0.075) inset, 0 0 4px #4a69bd;
+}
+
+#item-count {
+  border: none !important;
+  font-weight: 500;
+}
+
+#item-count:focus {
+  border-color: inherit;
+  box-shadow: none;
+  outline: none;
+  border: none !important;
+}
+
+@media (max-width: 666px) {
+  .card {
+    width: 90%;
+  }
+
+  .card-body .form-btn,
+  .remove-btn,
+  .finish-btn {
+    background-color: #4a69bd;
+    color: white;
+    width: 280px;
+  }
+  .card {
+    height: 85vh;
+  }
+}

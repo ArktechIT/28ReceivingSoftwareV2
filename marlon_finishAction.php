@@ -3,6 +3,7 @@
 	// include '../../V4/Common Data/PHP Modules/gerald_functions.php';
 	require('FPDF/fpdf.php');
     require('marlon_emailPdf.php');
+    date_default_timezone_set("Asia/Manila");
     error_reporting(0);
 
 	if(isset($_POST['finish-btn']))
@@ -46,13 +47,14 @@
             $n--;
         }
 
-        $sql1 = "SELECT * FROM system_receivingHistory GROUP BY supplier";
+        $sql1 = "SELECT * FROM system_receivingHistory WHERE date = '".date('Y-m-d')."' AND batchId = '' GROUP BY supplier";
         $groupReceiving = mysqli_query($connection, $sql1);
 
         while($result = mysqli_fetch_array($groupReceiving))
         {
             $genbatchId = date('Ymdhis');
-            $sql2 = "UPDATE system_receivingHistory SET batchId = '$genbatchId' WHERE supplier = '".$result['supplier']."'";
+            $sql2 = "UPDATE system_receivingHistory SET batchId = '$genbatchId' 
+            WHERE date = '".date('Y-m-d')."' AND batchId = '' AND supplier = '".$result['supplier']."'";
             $updateReceiving = mysqli_query($connection, $sql2);
 
             sleep(1);
@@ -60,7 +62,7 @@
 
 
         //GENERATE PR
-        $sqlReceiving = "SELECT * FROM system_receivinghistory GROUP BY batchId";
+        $sqlReceiving = "SELECT * FROM system_receivinghistory WHERE status = 0 GROUP BY batchId";
         $receivingQuery = mysqli_query($connection, $sqlReceiving);
         
         while ($receivingRecord = mysqli_fetch_array($receivingQuery))
@@ -140,11 +142,14 @@
             $pdf->Cell(50,5,'',0,0,'C');
             $pdf->Cell(50,5,'Employee Signature over printed name','T',0,'C'); // Ace
             $path = "pr_temp/".$batchId.".pdf";
-            $pdf->Output($path,'F');
+            if(!file_exists($path))
+            {
+                $pdf->Output($path,'F');
+            }
 
-            // sendEmail($batchId);
+            sendEmail($batchId);
         }
-        
+
         header('location: index.php');
     }
 ?>

@@ -18,7 +18,7 @@
         $mail->Username   = "ubase.noreply@gmail.com"; // SMTP account username
         $mail->Password   = "ubase123";        // SMTP account password
 
-        $mail->SetFrom('name@yourdomain.com', 'Arktech');
+        $mail->SetFrom('name@yourdomain.com', 'ARKTECH PHILIPPINES INC.');
 
         // $mail->AddReplyTo("name@yourdomain.com","First Last");
 
@@ -28,7 +28,7 @@
 
         $mail->MsgHTML($body);
 
-        $address = "marlonmercado111@gmail.com";
+        $address = "marlon.mercado@g.batstate-u.edu.ph";
         $mail->AddAddress($address, "Marlon Mercado");
 
         $mail->AddAttachment("pr_temp/".$file.".pdf");      // attachment
@@ -38,6 +38,9 @@
         } else {
             echo "Message sent!";
             unlink('pr_temp/'.$file.'.pdf');
+        	require('./includes/marlon_connection.php');
+            $sql = "UPDATE system_receivingHistory SET status = 1 WHERE batchId = '$file'";
+            $updateStatus = $connection->query($sql);
         }
     }
 

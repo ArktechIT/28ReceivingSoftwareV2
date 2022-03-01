@@ -17,7 +17,6 @@
                 $('.remove-btn').click();
             }
             document.getElementById('item-count').value = rowPending;
-
         });    
     </script>
 </head>

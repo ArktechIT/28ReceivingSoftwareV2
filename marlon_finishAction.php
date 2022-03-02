@@ -62,7 +62,7 @@
 
 
         //GENERATE PR
-        $sqlReceiving = "SELECT * FROM system_receivinghistory WHERE status = 0 GROUP BY batchId";
+        $sqlReceiving = "SELECT * FROM system_receivingHistory WHERE status = 0 GROUP BY batchId";
         $receivingQuery = mysqli_query($connection, $sqlReceiving);
         
         while ($receivingRecord = mysqli_fetch_array($receivingQuery))
@@ -104,7 +104,7 @@
 
             $count = 1;
             
-            $sqlBatch = "SELECT * FROM system_receivinghistory WHERE batchId = '$batchId'";
+            $sqlBatch = "SELECT * FROM system_receivingHistory WHERE batchId = '$batchId'";
             $receivingBatchId = mysqli_query($connection, $sqlBatch);
             
             while ($result = mysqli_fetch_array($receivingBatchId))

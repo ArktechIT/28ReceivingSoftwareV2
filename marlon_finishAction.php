@@ -40,21 +40,21 @@
 
         while($n>=0)
         {
-            $sqlRh = "INSERT INTO system_receivingHistory (poNumber, lotNumber, itemName, itemDescription, supplier, idNumber, pallet, batchId, date)
-            VALUES ('$poNumber[$n]', '$lotNumber[$n]', '$itemName[$n]', '$itemDesc[$n]', '$supplier[$n]', ' ', ' ', '', NOW())";
+            $sqlRh = "INSERT INTO system_receivingHistory (poNumber, lotNumber, itemName, itemDescription, supplier, idNumber, pallet, batchId, date, status)
+            VALUES ('$poNumber[$n]', '$lotNumber[$n]', '$itemName[$n]', '$itemDesc[$n]', '$supplier[$n]', ' ', ' ', '', NOW(), 1)";
             $recievingHistoryInsert = mysqli_query($connection, $sqlRh);
 
             $n--;
         }
 
-        $sql1 = "SELECT * FROM system_receivingHistory WHERE date = '".date('Y-m-d')."' AND batchId = '' GROUP BY supplier";
+        $sql1 = "SELECT * FROM system_receivingHistory WHERE batchId = '' GROUP BY supplier";
         $groupReceiving = mysqli_query($connection, $sql1);
 
         while($result = mysqli_fetch_array($groupReceiving))
         {
             $genbatchId = date('Ymdhis');
             $sql2 = "UPDATE system_receivingHistory SET batchId = '$genbatchId' 
-            WHERE date = '".date('Y-m-d')."' AND batchId = '' AND supplier = '".$result['supplier']."'";
+            WHERE batchId = '' AND supplier = '".$result['supplier']."'";
             $updateReceiving = mysqli_query($connection, $sql2);
 
             sleep(1);
@@ -62,7 +62,7 @@
 
 
         //GENERATE PR
-        $sqlReceiving = "SELECT * FROM system_receivingHistory WHERE status = 0 GROUP BY batchId";
+        $sqlReceiving = "SELECT * FROM system_receivingHistory WHERE status = 1 GROUP BY batchId";
         $receivingQuery = mysqli_query($connection, $sqlReceiving);
         
         while ($receivingRecord = mysqli_fetch_array($receivingQuery))
@@ -147,7 +147,7 @@
                 $pdf->Output($path,'F');
             }
 
-            sendEmail($batchId);
+            // sendEmail($batchId);
         }
 
         header('location: index.php');

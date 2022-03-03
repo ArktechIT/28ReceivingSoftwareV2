@@ -5,43 +5,54 @@
         $mail             = new PHPMailer();
 
         $body             = 'Proof of Receipt';
-        // $body             = eregi_replace("[\]",'',$body);
 
-        $mail->IsSMTP(); // telling the class to use SMTP
-        $mail->SMTPDebug  = 1;                     // enables SMTP debug information (for testing)
-                                                // 1 = errors and messages
-                                                // 2 = messages only
+        $mail->IsSMTP(); 
+        $mail->SMTPDebug  = 1;
         $mail->SMTPAuth   = true;
-        $mail->SMTPSecure = "ssl";                  // enable SMTP authentication
-        $mail->Host       = "smtp.gmail.com"; // sets the SMTP server
-        $mail->Port       = 465;                    // set the SMTP port for the GMAIL server
-        $mail->Username   = "ubase.noreply@gmail.com"; // SMTP account username
-        $mail->Password   = "ubase123";        // SMTP account password
+        $mail->SMTPSecure = "ssl";
+        $mail->Host       = "smtp.gmail.com";
+        $mail->Port       = 465;
+        $mail->Username   = "ubase.noreply@gmail.com";
+        $mail->Password   = "ubase123";
 
         $mail->SetFrom('name@yourdomain.com', 'ARKTECH PHILIPPINES INC.');
 
-        // $mail->AddReplyTo("name@yourdomain.com","First Last");
-
         $mail->Subject    = "Proof of Receipt";
-
-        // $mail->AltBody    = "To view the message, please use an HTML compatible email viewer!"; // optional, comment out and test
 
         $mail->MsgHTML($body);
 
-        $address = "marlon.mercado@g.batstate-u.edu.ph";
-        $mail->AddAddress($address, "Marlon Mercado");
+        $address1 = "marlon.mercado@g.batstate-u.edu.ph";
+        // $address2 = "gedaguila13@gmail.com";
+        $mail->AddAddress($address1);
+        // $mail->AddAddress($address2);
 
-        $mail->AddAttachment("pr_temp/".$file.".pdf");      // attachment
+        $mail->AddAttachment("pr_temp/".$file);
 
         if(!$mail->Send()) {
-        echo "Mailer Error: " . $mail->ErrorInfo;
+            echo "failed";
         } else {
-            echo "Message sent!";
-            unlink('pr_temp/'.$file.'.pdf');
+            echo "success";
+            unlink('pr_temp/'.$file);
         	require('./includes/marlon_connection.php');
-            $sql = "UPDATE system_receivingHistory SET status = 1 WHERE batchId = '$file'";
+            $sql = "UPDATE system_receivingHistory SET status = 0 WHERE batchId = '$file'";
             $updateStatus = $connection->query($sql);
         }
+    }
+
+    if(isset($_POST["filename"]))
+    {
+        $fileName = $_POST["filename"];
+        $n = key(array_slice($fileName, -1, 1, true));
+
+        if(!empty($fileName))
+        {
+            while($n>=0)
+            {
+                sendEmail($fileName[$n]);
+                $n--;
+            }   
+        }
+        header("location: marlon_sendEmail.php");
     }
 
 ?>

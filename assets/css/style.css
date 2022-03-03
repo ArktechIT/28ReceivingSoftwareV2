@@ -1,5 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
 .container-fluid {
-  background-color: #f4f4f4;
+  background-color: #fafafa;
   padding-right: 0px;
   padding-left: 0px;
   margin-right: 0px;
@@ -13,12 +19,19 @@ header {
   text-align: center;
   color: white;
   margin-bottom: 10px;
-  padding-top: 5px;
+  padding-top: 7px;
 }
 
 .card {
   width: 50%;
   height: 89vh;
+  margin: auto;
+  box-shadow: 5px 5px rgba(206, 200, 200, 0.974);
+}
+
+.small-card {
+  width: 30%;
+  height: 30vh;
   margin: auto;
   box-shadow: 5px 5px rgba(206, 200, 200, 0.974);
 }
@@ -85,6 +98,10 @@ header {
   display: none;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 table tbody tr {
   background-color: #f4f4f4;
   margin-bottom: 10px;
@@ -99,6 +116,7 @@ table tbody tr {
 #item-count {
   border: none !important;
   font-weight: 500;
+  width: 50px;
 }
 
 #item-count:focus {
@@ -108,9 +126,87 @@ table tbody tr {
   border: none !important;
 }
 
+#fileCount {
+  width: 70px;
+  position: absolute;
+  border: none;
+  margin-left: 10px;
+  font-weight: 600;
+  background-color: transparent;
+  color: black;
+}
+
+#fileCount:focus {
+  outline: none;
+}
+
+.swal2-confirm {
+  background-color: #4a69bd !important;
+}
+
+span[class^='dot'] {
+  opacity: 0;
+}
+.dot_one {
+  animation: dot_one 2s infinite linear;
+}
+.dot_two {
+  animation: dot_two 2s infinite linear;
+}
+.dot_three {
+  animation: dot_three 2s infinite linear;
+}
+@keyframes dot_one {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes dot_two {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes dot_three {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 @media (max-width: 666px) {
   .card {
     width: 90%;
+  }
+
+  .small-card {
+    width: 65%;
+    height: 30% !important;
   }
 
   .card-body .form-btn,
@@ -122,5 +218,14 @@ table tbody tr {
   }
   .card {
     height: 85vh;
+    min-height: 80vh;
+  }
+
+  .item-table-list {
+    height: 68vh;
+  }
+
+  .table-list {
+    height: 62vh;
   }
 }

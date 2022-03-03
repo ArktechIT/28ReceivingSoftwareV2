@@ -2,19 +2,14 @@
     require ('./includes/marlon_connection.php');
     session_start();
 
-    if(isset($_POST['remove']))
+    if(isset($_POST['filter']))
     {
         $items = $_POST['item_list_input'];
         $poContentId = $_POST['poContent_list_input'];
         $itemList = implode("','" ,$items);
-        // $items = array_unique($items);
-        // $items = array_values($items);
-        // $poContentId = array_unique($poContentId);
-        // $poContentId = array_values($poContentId);
-        // $poContentIdList = implode("','" ,$poContentId);
         $n = key(array_slice($items, -1, 1, true));
         if(!empty($items))
-        {   
+        {
             $orderSql = '';
             $count = 0;
             while($count<=$n)
@@ -55,7 +50,7 @@
                         <input type="hidden" value="'.$itemName.'" name="item_name[]"></input>
                         <input type="hidden" value="'.$result['poNumber'].'" name="item_poNumber[]"></input>
                         <input type="hidden" value="'.$result['itemDescription'].'" name="item_desc[]"></input>
-                        '.$items[$n].'
+                        <b>'.$items[$n].'</b>
                         <br><small>'.$row['lotNum'].' | '.$result['poNumber'].' | '.$result['supplierAlias'].'</small>
                         </td>
                         </tr>'; 

@@ -4,20 +4,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./assets/js/jquery-3.2.1.slim.min.js"></script>
     <link rel="stylesheet" href="./assets/css/bootstrap-min.css">   
-    <link rel="stylesheet" href="./assets/css/style.css">   
+    <link rel="stylesheet" href="./assets/css/bootstrap-sweetalert.css">   
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="./assets/js/jquery-3.6.0.min.js"></script>
+    <script src="./assets/js/sweetalert.min.js"></script>
     <title>Receiving Software | Pending List</title>
     <script>
-        $(document).ready(function(){
-            var rowPending = $(".pending-table .pending").length;
-            if (rowPending == 0){
-                $('.remove-btn').hide();
-                alert('NO PENDING ITEMS');
+        //check if pending is empty
+        var rowPending = $('.pending-table .pending').length;
+        if (rowPending == 0) {
+            $('.remove-btn').hide();
+            swal(
+            {
+                title: 'NO PENDING ITEMS',
+                type: 'info',
+                closeOnConfirm: false,
+                showCancelButton: false,
+                confirmButtonText: 'OK',
+            },
+            function (isConfirm) {
+                if (isConfirm) {
                 $('.remove-btn').click();
+                }
             }
-            document.getElementById('item-count').value = rowPending;
-        });    
+            );
+        }
+        document.getElementById('item-count').value = rowPending;
     </script>
 </head>
 <body>

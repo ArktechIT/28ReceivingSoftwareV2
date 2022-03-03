@@ -27,7 +27,6 @@
                     <div class="item-table-list">
                         <table class="table table-bordered table-finish">
                         <span class="pb-2" style="float: left">Item(s): <input type="text" id="item-count" value="0" tabindex="-1" readonly></span>
-                            
                             <tbody>
                                 <?php include 'marlon_checkFinish.php';?>
                             </tbody>

@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  //check if input is empty
   $('.add-form').on('change keyup', '.search-input', function (e) {
     let Disabled = true;
     $('.search-input').each(function () {
@@ -64,6 +65,7 @@ $('#send').on('click', function (e) {
   }
 });
 
+//count table rows
 var i = 0;
 function countRow() {
   i++;

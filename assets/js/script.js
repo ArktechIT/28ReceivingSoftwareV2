@@ -32,9 +32,7 @@ $(document).ready(function () {
       checkInput();
     }
 
-    var i = 0;
     $('.search-input').val('');
-    $('.form-btn').prop('disabled', false);
     $('.btn-outlined').prop('disabled', true);
   });
 });
@@ -92,6 +90,8 @@ function checkInput() {
             item_tags +
             '</td></tr>'
         );
+        $('.form-btn').prop('disabled', false);
+
         countRow();
       }
     },

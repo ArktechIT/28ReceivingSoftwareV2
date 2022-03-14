@@ -20,7 +20,7 @@
         <header>
             <h3>RECEIVING SOFTWARE</h3>
         </header>
-        <div class="card text-center">
+        <div class="card big-card text-center">
             <div class="card-body">
                 <h5>FINISHED LIST:</h5>
                 <form method="POST" action="marlon_finishAction.php">

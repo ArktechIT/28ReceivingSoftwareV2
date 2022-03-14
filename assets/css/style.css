@@ -29,6 +29,13 @@ header {
   box-shadow: 5px 5px rgba(206, 200, 200, 0.974);
 }
 
+.big-card {
+  width: 50%;
+  height: 89vh;
+  margin: auto;
+  box-shadow: 5px 5px rgba(206, 200, 200, 0.974);
+}
+
 .small-card {
   width: 30%;
   height: 30vh;
@@ -216,7 +223,7 @@ span[class^='dot'] {
     color: white;
     width: 280px;
   }
-  .card {
+  .big-card {
     height: 85vh;
     min-height: 80vh;
   }

@@ -44,6 +44,9 @@
             VALUES ('$poNumber[$n]', '$lotNumber[$n]', '$itemName[$n]', '$itemDesc[$n]', '$supplier[$n]', ' ', ' ', '', NOW(), 1)";
             $recievingHistoryInsert = mysqli_query($connection, $sqlRh);
 
+            $sql = "UPDATE ppic_workschedule SET status = 1 WHERE lotNumber = '$lotNumber[$n]' AND status = '0' ORDER BY processOrder ASC LIMIT 1";
+            $updateWorkSched = mysqli_query($connection, $sql);
+
             $n--;
         }
 

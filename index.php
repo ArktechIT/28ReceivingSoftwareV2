@@ -16,7 +16,7 @@
         <header>
             <h3>RECEIVING SOFTWARE</h3>
         </header>
-        <div class="card text-center">
+        <div class="card big-card text-center">
             <div class="card-body">
                 <h6>INPUT/SCAN/BARCODE ITEMS:</h6>
                 <form method="POST" action="marlon_finishList.php" class="add-form" autocomplete="off">

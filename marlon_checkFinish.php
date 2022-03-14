@@ -9,19 +9,7 @@
         $itemList = implode("','" ,$items);
         $n = key(array_slice($items, -1, 1, true));
         if(!empty($items))
-        {
-            $orderSql = '';
-            $count = 0;
-            while($count<=$n)
-            {
-                $orderSql .= ' productionTag = "'.$items[$count].'",';
-                $orderSql .= ' lotNumber = "'.$items[$count].'",';
-                
-                $count++;
-            }
-
-            $orderBy = rtrim($orderSql,",");
-           
+        {  
             while($n>=0)
             {
                 $sql = "SELECT lotNumber AS lotNum, productionTag, identifier FROM ppic_lotlist WHERE lotNumber = '$items[$n]' OR productionTag = '$items[$n]'";
@@ -34,12 +22,18 @@
                         $sql = "SELECT * FROM purchasing_pocontents WHERE poContentId = '$poContentId[$n]'"; 
                         $poContent = mysqli_query($connection, $sql);
                         $result = mysqli_fetch_array($poContent);
+                    
+                    	$sql2 = "SELECT lotNumber, processRemarks FROM ppic_workschedule WHERE lotNumber = '".$row['lotNum']."' AND status = '0' ORDER BY processOrder ASC LIMIT 1";
+                		$processRemarksQuery = mysqli_query($connection, $sql2);
+                    	$row2 = mysqli_fetch_array($processRemarksQuery);
 
                         if($row['identifier'] == 1)
                         {
-                            $itemName = $result['itemDescription'];
+							$itemName = $result['itemDescription'];
+                        	$itemDescription = $row2['processRemarks'];
                         } else {
                             $itemName = $result['itemName'];
+                        	$itemDescription = $result['itemDescription'];
                         }
 
                         echo 
@@ -49,7 +43,7 @@
                         <input type="hidden" value="'.$result['supplierAlias'].'" name="item_supplier[]"></input>
                         <input type="hidden" value="'.$itemName.'" name="item_name[]"></input>
                         <input type="hidden" value="'.$result['poNumber'].'" name="item_poNumber[]"></input>
-                        <input type="hidden" value="'.$result['itemDescription'].'" name="item_desc[]"></input>
+                        <input type="hidden" value="'.$itemDescription.'" name="item_desc[]"></input>
                         <b>'.$items[$n].'</b>
                         <br><small>'.$row['lotNum'].' | '.$result['poNumber'].' | '.$result['supplierAlias'].'</small>
                         </td>

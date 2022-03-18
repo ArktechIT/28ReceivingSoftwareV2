@@ -33,75 +33,68 @@
                     {
                         if(mysqli_num_rows($sqlFirstVal) > 0)
                         {
-                            if($workSchedResult['status'] != '0')
+                            if($sqlFirstValRow['processCode'] == '137' || $sqlFirstValRow['processCode'] == '138')
                             {
-                                if($sqlFirstValRow['processCode'] == '137' || $sqlFirstValRow['processCode'] == '138')
+                                $sql = "SELECT *, 
+                                CASE WHEN identifier=1 THEN GROUP_CONCAT(poContentId)
+                                WHEN identifier=4 THEN poId END AS pOrder
+                                FROM ppic_lotlist
+                                WHERE lotNumber = '".$row['lotNum']."'";
+                                
+                                $qry  = $connection->query($sql);
+                                $result = mysqli_fetch_array($qry);
+                                $poContentIdArray = explode (",", $result['pOrder']);
+                                $number = key(array_slice($poContentIdArray, -1, 1, true));
+                                $poContentIdArray = array_reverse($poContentIdArray);
+                                $count=0;
+                                while($number>=0)
                                 {
-                                    $sql = "SELECT *, 
-                                    CASE WHEN identifier=1 THEN GROUP_CONCAT(poContentId)
-                                    WHEN identifier=4 THEN poId END AS pOrder
-                                    FROM ppic_lotlist
-                                    WHERE lotNumber = '".$row['lotNum']."'";
-                                    
-                                    $qry  = $connection->query($sql);
-                                    $result = mysqli_fetch_array($qry);
-                                    $poContentIdArray = explode (",", $result['pOrder']);
-                                    $number = key(array_slice($poContentIdArray, -1, 1, true));
-                                    $poContentIdArray = array_reverse($poContentIdArray);
-                                    $count=0;
-                                    while($number>=0)
+                                    $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents WHERE dataThree = '$remarksArray[$number]' AND poContentId = '$poContentIdArray[$number]'";
+                                    $checkPO = mysqli_query($connection, $sqlPo);
+                                    if (mysqli_num_rows($checkPO) != 0)
                                     {
-                                        $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents WHERE dataThree = '$remarksArray[$number]' AND poContentId = '$poContentIdArray[$number]'";
-                                        $checkPO = mysqli_query($connection, $sqlPo);
-                                        if (mysqli_num_rows($checkPO) != 0)
+                                        $rowPO = mysqli_fetch_array($checkPO);
+                                        if ($rowPO['itemStatus'] != 2)
                                         {
-                                            $rowPO = mysqli_fetch_array($checkPO);
-                                            if ($rowPO['itemStatus'] != 2)
+                                            if ($row['identifier'] == 1)
                                             {
-                                                if ($row['identifier'] == 1)
+                                                if($rowPO['dataThree'] != '')
                                                 {
-                                                    if($rowPO['dataThree'] != '')
+                                                    if($count==1)
                                                     {
-                                                        if($count==1)
-                                                        {
-                                                            break;
-                                                        }
-                                                        $count++;
-                                                        echo json_encode(array("resp"=>"FINISHED", "poContentId"=> $rowPO['poContentId'], "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                                        break;
                                                     }
-                                                    else
-                                                    {
-                                                        echo json_encode(array("resp"=>"NO SUBCON PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                                    }   
-                                                }   
-                                                else
-                                                {
+                                                    $count++;
                                                     echo json_encode(array("resp"=>"FINISHED", "poContentId"=> $rowPO['poContentId'], "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                                                 }
-                                            }
+                                                else
+                                                {
+                                                    echo json_encode(array("resp"=>"NO SUBCON PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                                }   
+                                            }   
                                             else
                                             {
-                                                echo json_encode(array("resp"=>"NO PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                                echo json_encode(array("resp"=>"FINISHED", "poContentId"=> $rowPO['poContentId'], "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                                             }
                                         }
                                         else
                                         {
-                                            if($number <= 0){
-                                                echo json_encode(array("resp"=>"NO PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-
-                                            }
+                                            echo json_encode(array("resp"=>"NO PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                                         }
-                                        $number--;
                                     }
+                                    else
+                                    {
+                                        if($number <= 0){
+                                            echo json_encode(array("resp"=>"NO PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+
+                                        }
+                                    }
+                                    $number--;
                                 }
-                                else 
-                                {
-                                    echo json_encode(array("resp"=>"NOT AVAILABLE FOR RECEIVING", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                }
-                            } 
+                            }
                             else 
                             {
-                                echo json_encode(array("resp"=>"NOT FINISHED", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                echo json_encode(array("resp"=>"NOT AVAILABLE FOR RECEIVING", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                             }
                         }
                         else 

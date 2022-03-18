@@ -1,7 +1,7 @@
 <?php
     $host = 'localhost';
     $user = 'root';
-    $password = 'arktechdb';
+    $password = '';
     $database = 'arktechdatabase';
     
     $connection = mysqli_connect($host, $user, $password, $database);

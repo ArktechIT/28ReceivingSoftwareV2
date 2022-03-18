@@ -19,13 +19,13 @@
         </header>
         <div class="card big-card text-center">
             <div class="card-body">
-                <h5 class="finish-h5">FINISHED LIST:</h5>
-                <form method="POST" action="marlon_finishValidation.php" id="finish-form">
+                <h5>FINISHED LIST:</h5>
+                <form method="POST" action="marlon_finishAction.php" id="finish-form">
                     <div class="item-table-list">
                         <table class="table table-bordered table-finish">
                         <span class="pb-2" style="float: left">Item(s): <input type="text" class="item-count" id="item-count" value="0" tabindex="-1" readonly></span>
                             <tbody>
-                                <?php include 'controllers/marlon_checkFinish.php';?>
+                                <?php include 'marlon_checkFinish.php';?>
                             </tbody>
                         </table>
                     </div>

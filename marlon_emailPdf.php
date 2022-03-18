@@ -1,9 +1,7 @@
 <?php
-    require ('../phpmailer/class.phpmailer.php');
+    require ('./phpmailer/class.phpmailer.php');
 
     function sendEmail($file) {
-        require('./includes/marlon_connection.php');
-
         $mail             = new PHPMailer();
 
         $body             = 'Proof of Receipt';
@@ -24,9 +22,9 @@
         $mail->MsgHTML($body);
 
         $address1 = "marlon.mercado@g.batstate-u.edu.ph";
-        // $address2 = "gedaguila13@gmail.com";
+        $address2 = "gedaguila13@gmail.com";
         $mail->AddAddress($address1);
-        // $mail->AddAddress($address2);
+        $mail->AddAddress($address2);
 
         $mail->AddAttachment("pr_temp/".$file);
 
@@ -34,9 +32,10 @@
             echo "failed";
         } else {
             echo "success";
+            unlink('pr_temp/'.$file);
+        	require('./includes/marlon_connection.php');
             $sql = "UPDATE system_receivingHistory SET status = 0 WHERE batchId = '".substr($file, 0, -4)."'";
             $updateStatus = $connection->query($sql);
-            unlink('pr_temp/'.$file);
         }
     }
 

@@ -37,7 +37,7 @@ $('#send').on('click', function (e) {
       '<i class="text-success">Sending<span class="dot_one">.</span><span class="dot_two">.</span><span class="dot_three">.</span></i>'
     );
     var options_add = {
-      url: 'controllers/marlon_emailPdf.php',
+      url: 'marlon_emailPdf.php',
       success: function () {
         $('#sendingFilesText').html('<i class="text-success">Done!</i>');
         setTimeout(function () {
@@ -106,7 +106,7 @@ $('#finish-btn').on('click', function (e) {
   e.preventDefault();
 
   $.ajax({
-    url: 'controllers/marlon_finishValidation.php',
+    url: 'marlon_finishValidation.php',
     method: 'POST',
     data: {
       'finished_items[]': finished_items,
@@ -165,7 +165,7 @@ $('#finish-btn').on('click', function (e) {
 //-----------------------FUNCTIONS---------------------------//
 function finishItems() {
   $.ajax({
-    url: 'controllers/marlon_finishAction.php?action=finish',
+    url: 'marlon_finishAction.php?action=finish',
     method: 'POST',
     data: {
       'finished_items[]': finished_items,
@@ -252,7 +252,7 @@ function updateLocalStorage() {
 function checkInput() {
   var item_tags = $('#itemTags').val();
   $.ajax({
-    url: 'controllers/marlon_validation.php?itemTag=' + item_tags,
+    url: 'marlon_validation.php?itemTag=' + item_tags,
     method: 'POST',
     success: function (response) {
       var respData = JSON.parse(response);

@@ -1,5 +1,5 @@
     <?php
-	require('../includes/marlon_connection.php');
+	require('./includes/marlon_connection.php');
     error_reporting(0);
 
 	if(isset($_POST['finishBtn']))

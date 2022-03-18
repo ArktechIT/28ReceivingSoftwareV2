@@ -117,7 +117,7 @@
                 
                 $pdf->SetFont('Arial','B',12);
                 $pdf->Ln();$pdf->Ln();
-                // $pdf->Image('../Common Data/Templates/images/Ared.jpg',11,7,10,10);
+                $pdf->Image('../../V4/Common Data/Templates/images/Ared.jpg',11,7,10,10);
                 $pdf->Cell(0,3,'       ARKTECH PHILIPPINES INCORPORATED',0,0,'L');
                 $pdf->Ln();$pdf->Ln();
                 $pdf->SetFont('Arial','B',10);

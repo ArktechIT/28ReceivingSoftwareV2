@@ -35,7 +35,7 @@
                     ?>
                     <h3>TOTAL PDF FILES: <input type='text' id="fileCount" value='<?php echo $fileCount;?>' disabled></input></h3>
                     <h4 class="mt-4"><i id="sendingFilesText"></i></h4>
-                    <button type="submit" class="btn form-btn invisible" name="send" id="send">SEND</button>
+                    <button type="submit" class="btn form-btn" name="send" id="send">SEND</button>
                 </form>
             </div>
         </div>

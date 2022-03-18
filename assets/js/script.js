@@ -1,4 +1,13 @@
 $(document).ready(function () {
+  if (localStorage.content != '') {
+    $('#validation-table').html(localStorage.content);
+    removeRow();
+    pushPtag();
+    pushLot();
+  }
+
+  countRows();
+
   //check if input is empty
   $('.add-form').on('change keyup', '.search-input', function (e) {
     let Disabled = true;
@@ -18,23 +27,6 @@ $(document).ready(function () {
       $('.btn-outlined').prop('disabled', false);
     }
   });
-
-  //enter item tags
-  $('.btn-outlined').on('click', function (e) {
-    e.preventDefault();
-    var itemTagsValue = $('#itemTags').val();
-    var $tds = $('#validation-table tr > td').filter(function () {
-      return $.trim($(this).text()) == itemTagsValue;
-    });
-    if ($tds.length != 0) {
-      Swal.fire('', itemTagsValue + ' already exists.', 'error');
-    } else {
-      checkInput();
-    }
-
-    $('.search-input').val('');
-    $('.btn-outlined').prop('disabled', true);
-  });
 });
 
 //Sending PR via email
@@ -45,7 +37,7 @@ $('#send').on('click', function (e) {
       '<i class="text-success">Sending<span class="dot_one">.</span><span class="dot_two">.</span><span class="dot_three">.</span></i>'
     );
     var options_add = {
-      url: 'marlon_emailPdf.php',
+      url: 'controllers/marlon_emailPdf.php',
       success: function () {
         $('#sendingFilesText').html('<i class="text-success">Done!</i>');
         setTimeout(function () {
@@ -63,36 +55,229 @@ $('#send').on('click', function (e) {
   }
 });
 
+//enter/filter item tags
+$('.btn-outlined').on('click', function (e) {
+  e.preventDefault();
+  var itemTagsValue = $('#itemTags').val();
+  var $tds = $('#validation-table tr > td').filter(function () {
+    return $.trim($(this).text()) == itemTagsValue;
+  });
+  if (
+    $tds.length != 0 ||
+    ptag_array.includes(itemTagsValue) ||
+    lotNumber_array.includes(itemTagsValue)
+  ) {
+    Swal.fire(itemTagsValue + ' is already exist', '', 'error');
+  } else {
+    checkInput();
+  }
+
+  $('.search-input').val('');
+  $('.btn-outlined').prop('disabled', true);
+});
+
+//finish
+var finished_items = $('input[name="finished_items[]"]')
+  .map(function () {
+    return this.value;
+  })
+  .get();
+var item_supplier = $('input[name="item_supplier[]"]')
+  .map(function () {
+    return this.value;
+  })
+  .get();
+var item_name = $('input[name="item_name[]"]')
+  .map(function () {
+    return this.value;
+  })
+  .get();
+var item_poNumber = $('input[name="item_poNumber[]"]')
+  .map(function () {
+    return this.value;
+  })
+  .get();
+var item_desc = $('input[name="item_desc[]"]')
+  .map(function () {
+    return this.value;
+  })
+  .get();
+$('#finish-btn').on('click', function (e) {
+  e.preventDefault();
+
+  $.ajax({
+    url: 'controllers/marlon_finishValidation.php',
+    method: 'POST',
+    data: {
+      'finished_items[]': finished_items,
+      'item_supplier[]': item_supplier,
+      'item_name[]': item_name,
+      'item_poNumber[]': item_poNumber,
+      'item_desc[]': item_desc,
+      finishBtn: 1,
+    },
+    success: function (resp) {
+      if (resp != 3 && resp != 0) {
+        Swal.fire({
+          title: 'WARNING!',
+          html: resp,
+          icon: 'warning',
+          denyButtonText: `CANCEL`,
+          showDenyButton: true,
+          confirmButtonText: 'OK',
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            finishItems();
+          } else if (result.isDenied) {
+            swal.close();
+            $('#finish-btn').removeClass('disable');
+            $('#finish-btn').html('FINISH');
+          }
+        });
+      }
+
+      if (resp == 3) {
+        Swal.fire({
+          title: 'ALL ITEMS ARE ALREADY FINISHED!',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.localStorage.clear();
+            window.location.href = 'index.php';
+          }
+        });
+      }
+
+      if (resp == 0) {
+        finishItems();
+      }
+    },
+  });
+
+  $(this).html('PLEASE WAIT');
+  $(this).addClass('disable');
+  $(this).blur();
+});
+
+//-----------------------FUNCTIONS---------------------------//
+function finishItems() {
+  $.ajax({
+    url: 'controllers/marlon_finishAction.php?action=finish',
+    method: 'POST',
+    data: {
+      'finished_items[]': finished_items,
+      'item_supplier[]': item_supplier,
+      'item_name[]': item_name,
+      'item_poNumber[]': item_poNumber,
+      'item_desc[]': item_desc,
+    },
+    success: function (data) {
+      if (data == 'not set') {
+        alert(data);
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: 'DONE!',
+          showConfirmButton: false,
+          allowOutsideClick: false,
+          timer: 1500,
+        });
+      }
+      setTimeout(function () {
+        window.location.href = 'index.php';
+      }, 1600);
+    },
+  });
+  window.localStorage.clear();
+}
+
+var ptag_array = [];
+var lotNumber_array = [];
+
+//push productionTag in a array
+function pushPtag() {
+  var ptagInput = document.getElementsByName('ptag[]');
+  for (var i = 0; i < ptagInput.length; i++) {
+    var inp = ptagInput[i];
+    ptag_array.push(inp.value);
+  }
+}
+
+//push lotNumber in a array
+function pushLot() {
+  var lotInput = document.getElementsByName('lot[]');
+  for (var i = 0; i < lotInput.length; i++) {
+    var inp2 = lotInput[i];
+    lotNumber_array.push(inp2.value);
+  }
+}
+
 //count table rows
-var i = 0;
-function countRow() {
-  i++;
-  $('#item-count').val(i);
+function countRows() {
+  var rowCount = $('.table tr').length;
+  $('.item-count').val(rowCount);
+
+  if (rowCount > 0) {
+    $('.form-btn').prop('disabled', false);
+  } else {
+    $('.form-btn').prop('disabled', true);
+    rowCount = 0;
+  }
+}
+
+//Removing Items
+function removeRow() {
+  $('.fa-times').on('click', function (e) {
+    $(this).closest('tr').remove();
+    var lot = $(this).closest('td').find('input[name="lot[]"]').val();
+    var ptag = $(this).closest('td').find('input[name="ptag[]"]').val();
+    lotNumber_array.splice($.inArray(lot, lotNumber_array), 1);
+    ptag_array.splice($.inArray(ptag, ptag_array), 1);
+
+    countRows();
+    updateLocalStorage();
+  });
+}
+
+//update localStorage
+function updateLocalStorage() {
+  var validationTable = $('#validation-table').html();
+  localStorage.content = validationTable;
 }
 
 //check item tags
 function checkInput() {
   var item_tags = $('#itemTags').val();
   $.ajax({
-    url: 'marlon_validation.php?itemTag=' + item_tags,
+    url: 'controllers/marlon_validation.php?itemTag=' + item_tags,
     method: 'POST',
     success: function (response) {
       var respData = JSON.parse(response);
       if (respData.poContentId == 'none') {
         Swal.fire(respData.resp, '', 'error');
       } else {
-        $('.first-tr').after(
-          '<tr><td><input type="hidden" value="' +
+        $('tbody').append(
+          '<tr><td><input type=hidden name="ptag[]" value="' +
+            respData.PTAG +
+            '"></input><input type=hidden name="lot[]" value="' +
+            respData.lot +
+            '"></input><input type="hidden" value="' +
             item_tags +
             '" name="item_list_input[]"></input><input type="hidden" value="' +
             respData.poContentId +
             '" name="poContent_list_input[]"></input>' +
             item_tags +
-            '</td></tr>'
+            '<span><i class="fa fa-times"></i></span></td></tr>'
         );
         $('.form-btn').prop('disabled', false);
-
-        countRow();
+        countRows();
+        removeRow();
+        pushPtag();
+        pushLot();
+        updateLocalStorage();
       }
     },
   });

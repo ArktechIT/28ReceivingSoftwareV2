@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="./assets/css/bootstrap-min.css">   
     <link rel="stylesheet" href="./assets/css/sweetalert2.css">   
     <link rel="stylesheet" href="./assets/css/style.css"> 
+    <!-- <link rel="stylesheet" href="./assets/css/fontawesome.min.css">  -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
     <script src="./assets/js/jquery-3.6.0.min.js"></script>
     <script src="./assets/js/sweetalert.min.js"></script>
     <title>Receiving Software</title>
@@ -27,11 +29,9 @@
                         </div>
                     </div>
                     <div class="table-list">
-                    <span class="pb-2" style="float: left">Item(s): <input type="text" id="item-count"  tabindex="-1" value="0" readonly></span>
+                    <span class="pb-2" style="float: left">Item(s): <input type="text" class="item-count" id="item-count" tabindex="-1" value="0" readonly></span>
                         <table class="table table-bordered table-input" id="validation-table">
                             <tbody>
-                                <tr class="first-tr">
-                                </tr>
                             </tbody>
                         </table>
                     </div>

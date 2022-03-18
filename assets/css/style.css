@@ -13,6 +13,22 @@ body {
   height: 100vh;
 }
 
+.back-btn {
+  float: left;
+  margin-top: -3px;
+}
+
+.fa-times {
+  float: right;
+  color: #d9534f;
+  font-size: 27px;
+}
+
+.fa-times:hover {
+  color: #d9544fc4;
+  cursor: pointer;
+}
+
 header {
   height: 50px;
   background-color: #4a69bd;
@@ -20,6 +36,10 @@ header {
   color: white;
   margin-bottom: 10px;
   padding-top: 7px;
+}
+
+header .finish-h5 {
+  margin-left: 15px !important;
 }
 
 .card {
@@ -204,6 +224,16 @@ span[class^='dot'] {
   100% {
     opacity: 1;
   }
+}
+
+.disable {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  outline: none;
 }
 
 @media (max-width: 666px) {

@@ -65,7 +65,7 @@
                                     $checkPO = mysqli_query($connection, $sqlPo);
                                     $rowPO = mysqli_fetch_array($checkPO);
 
-                                    if($rowPO['dataThree'] != '')
+                                    if($receivingResult['processRemarks'] != '')
                                     {
                                         if (mysqli_num_rows($checkPO) != 0)
                                         {

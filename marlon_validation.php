@@ -1,5 +1,6 @@
 <?php
     require ('./includes/marlon_connection.php');
+    error_reporting(0);
     if(isset($_GET['itemTag']))
     {
         $itemTags = $_GET['itemTag'];
@@ -47,56 +48,53 @@
                                 $poContentIdArray = explode (",", $result['pOrder']);
                                 $number = key(array_slice($poContentIdArray, -1, 1, true));
                                 $poContentIdArray = array_reverse($poContentIdArray);
+                                $remarksContent = '';
                                 
-                                if($row['identifier'] == 1)
-                                {
-                                    $where = "WHERE dataThree = '$remarksArray[$number]' AND poContentId IN ('".implode("','",$poContentIdArray)."')";
-                                }
-                                else
-                                {
-                                    $where = "WHERE poContentId IN ('".implode("','",$poContentIdArray)."')";
-                                }
-
                                 while($number>=0)
                                 {
+                                    if($row['identifier'] == 1)
+                                    {
+                                        $where = "WHERE dataThree = '$remarksArray[$number]' AND poContentId IN ('".implode("','",$poContentIdArray)."')";
+                                    }
+                                    else
+                                    {
+                                        $where = "WHERE poContentId IN ('".implode("','",$poContentIdArray)."')";
+                                    }
+
                                     $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents ".$where;
                                     $checkPO = mysqli_query($connection, $sqlPo);
-                                    if (mysqli_num_rows($checkPO) != 0)
+                                    $rowPO = mysqli_fetch_array($checkPO);
+
+                                    if($rowPO['dataThree'] != '')
                                     {
-                                        $rowPO = mysqli_fetch_array($checkPO);
-                                        if ($rowPO['itemStatus'] != 2)
+                                        if (mysqli_num_rows($checkPO) != 0)
                                         {
-                                            if ($row['identifier'] == 1)
+                                            if ($rowPO['itemStatus'] != 2)
                                             {
-                                                if($rowPO['dataThree'] != '')
+                                                if($number <=0)
                                                 {
-                                                
-                                                    echo json_encode(array("resp"=>"FINISHED", "poContentId"=> $rowPO['poContentId'], "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                                    break;
-                                            
+                                                    echo json_encode(array("resp"=>"PROCEED", "poContentId"=> $rowPO['poContentId'], "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                                                 }
-                                                else
-                                                {
-                                                    echo json_encode(array("resp"=>"NO SUBCON PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                                }   
-                                            }   
+                                            }
                                             else
                                             {
-                                                echo json_encode(array("resp"=>"FINISHED", "poContentId"=> $rowPO['poContentId'], "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                                echo json_encode(array("resp"=>"CANCELED PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                                             }
                                         }
                                         else
                                         {
-                                            echo json_encode(array("resp"=>"CANCELED PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                            $remarksContent .= $remarksArray[$number].'<br>';
+                                            if($number <= 0 && $remarksContent != '')
+                                            {
+                                                echo json_encode(array("resp"=>"NO PURCHASE ORDER<br>".$remarksContent, "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                            }
                                         }
-                                        
                                     }
                                     else
                                     {
-                                        echo json_encode(array("resp"=>"NO PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                        echo json_encode(array("resp"=>"NO SUBCON PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                                         break;
-                                    }
-
+                                    }   
                                     $number--;
                                 }
                             }

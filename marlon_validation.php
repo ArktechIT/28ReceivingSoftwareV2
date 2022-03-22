@@ -87,7 +87,7 @@
                                         }
                                         else
                                         {
-                                            echo json_encode(array("resp"=>"NO PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                            echo json_encode(array("resp"=>"CANCELED PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                                         }
                                         
                                     }

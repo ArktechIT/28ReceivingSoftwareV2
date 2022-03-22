@@ -47,10 +47,19 @@
                                 $poContentIdArray = explode (",", $result['pOrder']);
                                 $number = key(array_slice($poContentIdArray, -1, 1, true));
                                 $poContentIdArray = array_reverse($poContentIdArray);
-                              
+                                
+                                if($row['identifier'] == 1)
+                                {
+                                    $where = "WHERE dataThree = '$remarksArray[$number]' AND poContentId IN ('".implode("','",$poContentIdArray)."')";
+                                }
+                                else
+                                {
+                                    $where = "WHERE poContentId IN ('".implode("','",$poContentIdArray)."')";
+                                }
+
                                 while($number>=0)
                                 {
-                                    $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents WHERE dataThree = '$remarksArray[$number]' AND poContentId IN ('".implode("','",$poContentIdArray)."')";
+                                    $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents ".$where;
                                     $checkPO = mysqli_query($connection, $sqlPo);
                                     if (mysqli_num_rows($checkPO) != 0)
                                     {

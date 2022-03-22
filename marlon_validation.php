@@ -15,12 +15,14 @@
             $workSchedQuery = mysqli_query($connection, $sql);
             $workSchedResult = mysqli_fetch_array($workSchedQuery);
 
-            $sql2 = "SELECT lotNumber, processCode, processRemarks FROM ppic_workschedule WHERE lotNumber = '".$row['lotNum']."' AND (processCode = 137 OR processCode = 138)";
+            $sql2 = "SELECT lotNumber, processCode, processRemarks FROM ppic_workschedule 
+            WHERE lotNumber = '".$row['lotNum']."' AND (processCode = 137 OR processCode = 138)";
             $checkReceivingProcess = mysqli_query($connection, $sql2);
             $receivingResult = mysqli_fetch_array($checkReceivingProcess);
             $remarksArray = explode (",", $receivingResult['processRemarks']);
 
-            $sqlFirst = "SELECT lotNumber, processCode, status, processOrder, lotNumber FROM ppic_workschedule WHERE lotNumber = '".$row['lotNum']."' AND status = '0' ORDER BY processOrder ASC LIMIT 1";
+            $sqlFirst = "SELECT lotNumber, processCode, status, processOrder, lotNumber FROM ppic_workschedule
+             WHERE lotNumber = '".$row['lotNum']."' AND status = '0' ORDER BY processOrder ASC LIMIT 1";
             $sqlFirstVal = mysqli_query($connection, $sqlFirst);
             $sqlFirstValRow = mysqli_fetch_array($sqlFirstVal);
             
@@ -28,7 +30,8 @@
             {
                 if(mysqli_num_rows($checkReceivingProcess) > 0)
                 {
-                    $sql = "SELECT lotNumber, status, processCode FROM ppic_workschedule WHERE lotNumber = '".$row['lotNum']."' AND status = 0 AND (processCode = 137 OR processCode = 138) ORDER BY processOrder ASC";
+                    $sql = "SELECT lotNumber, status, processCode FROM ppic_workschedule 
+                    WHERE lotNumber = '".$row['lotNum']."' AND status = 0 AND (processCode = 137 OR processCode = 138) ORDER BY processOrder ASC";
                     $checkReceivingProcess2 = mysqli_query($connection, $sql);
 
                     if(mysqli_num_rows($checkReceivingProcess2) > 0)
@@ -49,24 +52,56 @@
                                 $number = key(array_slice($poContentIdArray, -1, 1, true));
                                 $poContentIdArray = array_reverse($poContentIdArray);
                                 $remarksContent = '';
-                                
-                                if($row['identifier'] == 1 && $receivingResult['processRemarks'] != '')
+
+                                if($row['identifier'] == 1)
+                                {
+                                    if($receivingResult['processRemarks'] != '')
+                                    {
+                                        while($number>=0)
+                                        {
+                                            $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents
+                                            WHERE dataThree = '$remarksArray[$number]' AND poContentId IN ('".implode("','",$poContentIdArray)."')";
+                                            $checkPO = mysqli_query($connection, $sqlPo);
+                                            $rowPO = mysqli_fetch_array($checkPO);
+                                        
+                                            if (mysqli_num_rows($checkPO) != 0)
+                                            {
+                                                if ($rowPO['itemStatus'] != 2)
+                                                {
+                                                    if($number <=0)
+                                                    {
+                                                        echo json_encode(array("resp"=>"PROCEED", "poContentId"=> $rowPO['poContentId'], "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    echo json_encode(array("resp"=>"CANCELED PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                $remarksContent .= $remarksArray[$number].'<br>';
+                                                if($number <= 0 && $remarksContent != '')
+                                                {
+                                                    echo json_encode(array("resp"=>"NO PURCHASE ORDER<br>".$remarksContent, "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                                }
+                                            }
+                                            $number--;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        echo json_encode(array("resp"=>"NO SUBCON PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                    }
+                                }
+                                else
                                 {
                                     while($number>=0)
                                     {
-                                        if($row['identifier'] == 1)
-                                        {
-                                            $where = "WHERE dataThree = '$remarksArray[$number]' AND poContentId IN ('".implode("','",$poContentIdArray)."')";
-                                        }
-                                        else
-                                        {
-                                            $where = "WHERE poContentId IN ('".implode("','",$poContentIdArray)."')";
-                                        }
-
-                                        $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents ".$where;
+                                        $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents
+                                        WHERE poContentId IN ('".implode("','",$poContentIdArray)."')";
                                         $checkPO = mysqli_query($connection, $sqlPo);
                                         $rowPO = mysqli_fetch_array($checkPO);
-
                                     
                                         if (mysqli_num_rows($checkPO) != 0)
                                         {
@@ -90,11 +125,8 @@
                                                 echo json_encode(array("resp"=>"NO PURCHASE ORDER<br>".$remarksContent, "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                                             }
                                         }
-                                    }
-                                }
-                                else
-                                {
-                                    echo json_encode(array("resp"=>"NO SUBCON PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                        $number--;
+                                    } 
                                 }
                             }
                             else 
@@ -116,7 +148,6 @@
                 {
                     echo json_encode(array("resp"=>"NO RECEIVING PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
                 }
-               
             } 
             else 
             {

@@ -56,7 +56,7 @@
         }
         else
         {
-            header('location: gerald_receivedSql.php');
+            header('location: index.php');
         }
     }
 ?>

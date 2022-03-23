@@ -192,5 +192,6 @@
                 }
             }
         }
+        include_once('gerald_receivedSql.php');
     }
 ?>

@@ -328,6 +328,4 @@
 		}
 
 	}	
-
-	header('location: index.php');
 ?>

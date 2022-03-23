@@ -12,6 +12,7 @@
     	$itemName = $_POST['item_name'];
     	$poNumber = $_POST['item_poNumber'];
     	$itemDesc = $_POST['item_desc'];
+    	$quantity = $_POST['quantity'];
 
         class PDF extends FPDF
         {
@@ -47,6 +48,7 @@
             $newItemNameArray = array();
             $newPoNumberArray = array();
             $newItemDescArray = array();
+            $newQuantityArray = array();
             while($row = $checkReceivingProcess->fetch_array())
             {
                 $lotNumberKey = array_search($row['lotNumber'], $lotNumber);
@@ -55,7 +57,7 @@
                 array_push($newItemNameArray, $itemName[$lotNumberKey]);
                 array_push($newPoNumberArray, $poNumber[$lotNumberKey]);
                 array_push($newItemDescArray,$itemDesc[$lotNumberKey]);
-
+                array_push($newQuantityArray,$quantity[$lotNumberKey]);
             }
 
     	    $n = key(array_slice($newLotNumberArray, -1, 1, true));
@@ -79,8 +81,8 @@
             //FINISHING THE ITEMS
             while($n>=0)
             {
-                $sqlRh = "INSERT INTO system_receivingHistory (poNumber, lotNumber, itemName, itemDescription, supplier, idNumber, pallet, batchId, date, status)
-                VALUES ('$newPoNumberArray[$n]', '$newLotNumberArray[$n]', '$newItemNameArray[$n]', '$newItemDescArray[$n]', '$newSupplierArray[$n]', ' ', ' ', '', NOW(), 1)";
+                $sqlRh = "INSERT INTO system_receivingHistory (poNumber, lotNumber, itemName, itemDescription, quantity, supplier, idNumber, pallet, batchId, date, status)
+                VALUES ('$newPoNumberArray[$n]', '$newLotNumberArray[$n]', '$newItemNameArray[$n]', '$newItemDescArray[$n]', '$newQuantityArray[$n]', '$newSupplierArray[$n]', ' ', ' ', '', NOW(), 1)";
                 $recievingHistoryInsert = mysqli_query($connection, $sqlRh);
 
                 $sql = "UPDATE ppic_workschedule SET status = 1 WHERE lotNumber = '$newLotNumberArray[$n]' AND status = '0' ORDER BY processOrder ASC LIMIT 1";

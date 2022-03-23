@@ -12,7 +12,7 @@
         {  
             while($n>=0)
             {
-                $sql = "SELECT lotNumber AS lotNum, productionTag, identifier FROM ppic_lotlist WHERE lotNumber = '$items[$n]' OR productionTag = '$items[$n]'";
+                $sql = "SELECT lotNumber AS lotNum, productionTag, identifier, workingQuantity FROM ppic_lotlist WHERE lotNumber = '$items[$n]' OR productionTag = '$items[$n]'";
                 $finishList = mysqli_query($connection, $sql);
 
                 if ($finishList->num_rows != 0)
@@ -44,6 +44,7 @@
                         <input type="hidden" value="'.$itemName.'" name="item_name[]"></input>
                         <input type="hidden" value="'.$result['poNumber'].'" name="item_poNumber[]"></input>
                         <input type="hidden" value="'.$itemDescription.'" name="item_desc[]"></input>
+                        <input type="hidden" value="'.$row['workingQuantity'].'" name="quantity[]"></input>
                         <b>'.$items[$n].'</b>
                         <br><small>'.$row['lotNum'].' | '.$result['poNumber'].' | '.$result['supplierAlias'].'</small>
                         </td>

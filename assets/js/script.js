@@ -82,26 +82,37 @@ var finished_items = $('input[name="finished_items[]"]')
     return this.value;
   })
   .get();
+
 var item_supplier = $('input[name="item_supplier[]"]')
   .map(function () {
     return this.value;
   })
   .get();
+
 var item_name = $('input[name="item_name[]"]')
   .map(function () {
     return this.value;
   })
   .get();
+
 var item_poNumber = $('input[name="item_poNumber[]"]')
   .map(function () {
     return this.value;
   })
   .get();
+
 var item_desc = $('input[name="item_desc[]"]')
   .map(function () {
     return this.value;
   })
   .get();
+
+var quantity = $('input[name="quantity[]"]')
+  .map(function () {
+    return this.value;
+  })
+  .get();
+
 $('#finish-btn').on('click', function (e) {
   e.preventDefault();
 
@@ -114,6 +125,7 @@ $('#finish-btn').on('click', function (e) {
       'item_name[]': item_name,
       'item_poNumber[]': item_poNumber,
       'item_desc[]': item_desc,
+      'quantity[]': quantity,
       finishBtn: 1,
     },
     success: function (resp) {
@@ -173,6 +185,7 @@ function finishItems() {
       'item_name[]': item_name,
       'item_poNumber[]': item_poNumber,
       'item_desc[]': item_desc,
+      'quantity[]': quantity,
     },
     success: function (data) {
       if (data == 'not set') {

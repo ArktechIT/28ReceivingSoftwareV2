@@ -1,6 +1,12 @@
 <?php
     require ('./includes/marlon_connection.php');
     error_reporting(0);
+
+    function response($resp, $poContentId, $ptag, $lot)
+    {
+        echo json_encode(array("resp"=> $resp, "poContentId"=> $poContentId, "PTAG" => $ptag, "lot" => $lot)); 
+    }
+
     if(isset($_GET['itemTag']))
     {
         $itemTags = $_GET['itemTag'];
@@ -21,131 +27,134 @@
             $receivingResult = mysqli_fetch_array($checkReceivingProcess);
             $remarksArray = explode (",", $receivingResult['processRemarks']);
 
-            $sqlFirst = "SELECT lotNumber, processCode, status, processOrder, lotNumber FROM ppic_workschedule
-             WHERE lotNumber = '".$row['lotNum']."' AND status = '0' ORDER BY processOrder ASC LIMIT 1";
+            //CHECK WORKING QUANTITY
+            if($row['workingQuantity'] == 0)  
+            {
+                response("WORKING QUANTITY 0", "none", $row['productionTag'], $row['lotNum']);
+                exit;
+            }
+
+            //CHECK RECEIVING PROCESS
+            if(mysqli_num_rows($checkReceivingProcess) == 0)
+            {
+                response("NO RECEIVING PROCESS", "none", $row['productionTag'], $row['lotNum']);
+                exit;
+            }
+
+            //CHECK IF ALREADY RECEIVED
+            $sql = "SELECT lotNumber, status, processCode 
+                    FROM ppic_workschedule 
+                    WHERE lotNumber = '".$row['lotNum']."' AND status = 0 AND (processCode = 137 OR processCode = 138) 
+                    ORDER BY processOrder ASC";
+            $checkReceivingProcess2 = mysqli_query($connection, $sql);
+
+            if(mysqli_num_rows($checkReceivingProcess2) == 0)
+            {
+                response("RECEIVING ALREADY FINISHED", "none", $row['productionTag'], $row['lotNum']);
+                exit;
+            }
+
+            //CHECK IF NO RECEIVING PROCESS
+            $sqlFirst = "SELECT lotNumber, processCode, status, processOrder, lotNumber 
+                        FROM ppic_workschedule
+                        WHERE lotNumber = '".$row['lotNum']."' AND status = '0' 
+                        ORDER BY processOrder ASC LIMIT 1";
             $sqlFirstVal = mysqli_query($connection, $sqlFirst);
             $sqlFirstValRow = mysqli_fetch_array($sqlFirstVal);
-            
-            if($row['workingQuantity'] != 0)
+
+            if(mysqli_num_rows($sqlFirstVal) == 0)
             {
-                if(mysqli_num_rows($checkReceivingProcess) > 0)
+                response("NO RECEIVING PROCESS", "none", $row['productionTag'], $row['lotNum']);
+                exit;
+            }
+
+            //CHECK IF NOT AVAILABLE FOR RECEIVING
+            if($sqlFirstValRow['processCode'] != '137' && $sqlFirstValRow['processCode'] != '138')
+            {
+                response("NOT AVAILABLE FOR RECEIVING", "none", $row['productionTag'], $row['lotNum']);
+                exit;
+            }
+            
+            $sql = "SELECT *, 
+            CASE WHEN identifier=1 THEN GROUP_CONCAT(poContentId)
+            WHEN identifier=4 THEN poId END AS pOrder
+            FROM ppic_lotlist
+            WHERE lotNumber = '".$row['lotNum']."'";
+            
+            $qry  = $connection->query($sql);
+            $result = mysqli_fetch_array($qry);
+            $poContentIdArray = explode (",", $result['pOrder']);
+            $number = key(array_slice($poContentIdArray, -1, 1, true));
+            $poContentIdArray = array_reverse($poContentIdArray);
+            $remarksContent = '';
+
+            if($row['identifier'] == 1)
+            {
+                if($receivingResult['processRemarks'] == '') //CHECK IF NO SUBCON PROCESS
                 {
-                    $sql = "SELECT lotNumber, status, processCode FROM ppic_workschedule 
-                    WHERE lotNumber = '".$row['lotNum']."' AND status = 0 AND (processCode = 137 OR processCode = 138) ORDER BY processOrder ASC";
-                    $checkReceivingProcess2 = mysqli_query($connection, $sql);
-
-                    if(mysqli_num_rows($checkReceivingProcess2) > 0)
+                    response("NO SUBCON PROCESS", "none", $row['productionTag'], $row['lotNum']);
+                    exit;
+                }
+                
+                while($number>=0)
+                {
+                    $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents
+                    WHERE dataThree = '$remarksArray[$number]' AND poContentId IN ('".implode("','",$poContentIdArray)."')";
+                    $checkPO = mysqli_query($connection, $sqlPo);
+                    $rowPO = mysqli_fetch_array($checkPO);
+                
+                    if (mysqli_num_rows($checkPO) != 0)
                     {
-                        if(mysqli_num_rows($sqlFirstVal) > 0)
+                        if ($rowPO['itemStatus'] != 2)
                         {
-                            if($sqlFirstValRow['processCode'] == '137' || $sqlFirstValRow['processCode'] == '138')
+                            if($number <=0)
                             {
-                                $sql = "SELECT *, 
-                                CASE WHEN identifier=1 THEN GROUP_CONCAT(poContentId)
-                                WHEN identifier=4 THEN poId END AS pOrder
-                                FROM ppic_lotlist
-                                WHERE lotNumber = '".$row['lotNum']."'";
-                                
-                                $qry  = $connection->query($sql);
-                                $result = mysqli_fetch_array($qry);
-                                $poContentIdArray = explode (",", $result['pOrder']);
-                                $number = key(array_slice($poContentIdArray, -1, 1, true));
-                                $poContentIdArray = array_reverse($poContentIdArray);
-                                $remarksContent = '';
-
-                                if($row['identifier'] == 1)
-                                {
-                                    if($receivingResult['processRemarks'] != '')
-                                    {
-                                        while($number>=0)
-                                        {
-                                            $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents
-                                            WHERE dataThree = '$remarksArray[$number]' AND poContentId IN ('".implode("','",$poContentIdArray)."')";
-                                            $checkPO = mysqli_query($connection, $sqlPo);
-                                            $rowPO = mysqli_fetch_array($checkPO);
-                                        
-                                            if (mysqli_num_rows($checkPO) != 0)
-                                            {
-                                                if ($rowPO['itemStatus'] != 2)
-                                                {
-                                                    if($number <=0)
-                                                    {
-                                                        echo json_encode(array("resp"=>"PROCEED", "poContentId"=> $rowPO['poContentId'], "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    echo json_encode(array("resp"=>"CANCELED PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                                }
-                                            }
-                                            else
-                                            {
-                                                $remarksContent .= $remarksArray[$number].'<br>';
-                                                if($number <= 0 && $remarksContent != '')
-                                                {
-                                                    echo json_encode(array("resp"=>"NO PURCHASE ORDER<br>".$remarksContent, "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                                }
-                                            }
-                                            $number--;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        echo json_encode(array("resp"=>"NO SUBCON PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                    }
-                                }
-                                else
-                                {
-                                    $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents
-                                    WHERE poContentId IN ('".implode("','",$poContentIdArray)."')";
-                                    $checkPO = mysqli_query($connection, $sqlPo);
-                                    $rowPO = mysqli_fetch_array($checkPO);
-                                
-                                    if (mysqli_num_rows($checkPO) != 0)
-                                    {
-                                        if ($rowPO['itemStatus'] != 2)
-                                        {
-                                            echo json_encode(array("resp"=>"PROCEED", "poContentId"=> $rowPO['poContentId'], "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                        }
-                                        else
-                                        {
-                                            echo json_encode(array("resp"=>"CANCELED PURCHASE ORDER", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        echo json_encode(array("resp"=>"NO PURCHASE ORDER<br>".$remarksContent, "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
-                                    }
-                                }
-                            }
-                            else 
-                            {
-                                echo json_encode(array("resp"=>"NOT AVAILABLE FOR RECEIVING", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                                response("PROCEED", $rowPO['poContentId'], $row['productionTag'], $row['lotNum']);
                             }
                         }
-                        else 
+                        else
                         {
-                            echo json_encode(array("resp"=>"NO RECEIVING PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                            response("CANCELED PURCHASE ORDER", "none", $row['productionTag'], $row['lotNum']);
                         }
                     }
                     else
                     {
-                        echo json_encode(array("resp"=>"RECEIVING ALREADY FINISHED", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                        $remarksContent .= $remarksArray[$number].'<br>';
+                        if($number <= 0 && $remarksContent != '')
+                        {
+                            response("NO PURCHASE ORDER<br>".$remarksContent, "none", $row['productionTag'], $row['lotNum']);
+                        }
+                    }
+                    $number--;
+                }
+            }
+            else
+            {
+                $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents
+                WHERE poContentId IN ('".implode("','",$poContentIdArray)."')";
+                $checkPO = mysqli_query($connection, $sqlPo);
+                $rowPO = mysqli_fetch_array($checkPO);
+            
+                if (mysqli_num_rows($checkPO) != 0)
+                {
+                    if ($rowPO['itemStatus'] != 2)
+                    {
+                        response("PROCEED", $rowPO['poContentId'], $row['productionTag'], $row['lotNum']);
+                    }
+                    else
+                    {
+                        response("CANCELED PURCHASE ORDER", "none", $row['productionTag'], $row['lotNum']);
                     }
                 }
                 else
                 {
-                    echo json_encode(array("resp"=>"NO RECEIVING PROCESS", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
+                    response("NO PURCHASE ORDER", "none", $row['productionTag'], $row['lotNum']);
                 }
-            } 
-            else 
-            {
-                echo json_encode(array("resp"=>"WORKING QUANTITY 0", "poContentId"=> "none", "PTAG" => $row['productionTag'], "lot" => $row['lotNum']));
             }
         }
         else
         {
-            echo json_encode(array("resp"=>"UNKNOWN TAG", "poContentId"=> "none"));
+            response("UNKNOWN TAG", "none", "none", "none");
         }
     }
 ?>

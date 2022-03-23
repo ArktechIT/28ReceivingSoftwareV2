@@ -60,6 +60,8 @@ $('#send').on('click', function (e) {
 //enter/filter item tags
 $('.btn-outlined').on('click', function (e) {
   e.preventDefault();
+  $('.search-input').prop('readonly', true);
+
   $(this).html('<div class="spinner-border" role="status"></div>');
   var itemTagsValue = $('#itemTags').val();
   var $tds = $('#validation-table tr > td').filter(function () {
@@ -79,7 +81,6 @@ $('.btn-outlined').on('click', function (e) {
     checkInput();
   }
 
-  $('.search-input').prop('readonly', true);
   $('.btn-outlined').prop('disabled', true);
 });
 

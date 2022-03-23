@@ -35,7 +35,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <button type="submit" class="btn form-btn" name="filter" disabled>SUBMIT</button>
+                    <button type="submit" class="btn form-btn" name="filter">SUBMIT</button>
                 </form>
             </div>
         </div>

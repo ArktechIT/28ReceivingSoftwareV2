@@ -121,11 +121,6 @@ $('#finish-btn').on('click', function (e) {
     method: 'POST',
     data: {
       'finished_items[]': finished_items,
-      'item_supplier[]': item_supplier,
-      'item_name[]': item_name,
-      'item_poNumber[]': item_poNumber,
-      'item_desc[]': item_desc,
-      'quantity[]': quantity,
       finishBtn: 1,
     },
     success: function (resp) {

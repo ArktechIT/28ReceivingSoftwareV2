@@ -73,9 +73,10 @@ $('.btn-outlined').on('click', function (e) {
   ) {
     Swal.fire(itemTagsValue + ' is already exist', '', 'error');
     $('.btn-outlined').html('ADD');
+    $('.search-input').val('');
+    $('.search-input').prop('readonly', false);
   } else {
     checkInput();
-    $('.btn-outlined').html('ADD');
   }
 
   $('.search-input').prop('readonly', true);
@@ -293,6 +294,7 @@ function checkInput() {
         pushLot();
         updateLocalStorage();
       }
+      $('.btn-outlined').html('ADD');
       $('.search-input').val('');
       $('.search-input').prop('readonly', false);
     },

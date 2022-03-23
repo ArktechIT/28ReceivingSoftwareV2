@@ -61,6 +61,7 @@ $('#send').on('click', function (e) {
 $('.btn-outlined').on('click', function (e) {
   e.preventDefault();
   $('.search-input').prop('readonly', true);
+  $('.loader').show();
 
   $(this).html('<div class="spinner-border" role="status"></div>');
   var itemTagsValue = $('#itemTags').val();
@@ -73,6 +74,7 @@ $('.btn-outlined').on('click', function (e) {
     ptag_array.includes(itemTagsValue) ||
     lotNumber_array.includes(itemTagsValue)
   ) {
+    $('.loader').fadeOut(300);
     Swal.fire(itemTagsValue + ' is already exist', '', 'error');
     $('.btn-outlined').html('ADD');
     $('.search-input').val('');
@@ -298,6 +300,7 @@ function checkInput() {
       $('.btn-outlined').html('ADD');
       $('.search-input').val('');
       $('.search-input').prop('readonly', false);
+      $('.loader').fadeOut(300);
     },
   });
 }

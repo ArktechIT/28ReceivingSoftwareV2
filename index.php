@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="./assets/css/bootstrap-min.css">   
     <link rel="stylesheet" href="./assets/css/sweetalert2.css">   
     <link rel="stylesheet" href="./assets/css/style.css"> 
-    <!-- <link rel="stylesheet" href="./assets/css/fontawesome.min.css">  -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
     <script src="./assets/js/jquery-3.6.0.min.js"></script>
     <script src="./assets/js/sweetalert.min.js"></script>
     <title>Receiving Software</title>
 </head>
 <body>
+    <div class="loader"></div>
     <div class="container-fluid">
         <header>
             <h3>RECEIVING SOFTWARE</h3>

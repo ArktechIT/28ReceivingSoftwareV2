@@ -1,4 +1,6 @@
 $(document).ready(function () {
+  $('.loader').fadeOut(400);
+
   if (localStorage.content != '') {
     $('#validation-table').html(localStorage.content);
     removeRow();
@@ -58,21 +60,25 @@ $('#send').on('click', function (e) {
 //enter/filter item tags
 $('.btn-outlined').on('click', function (e) {
   e.preventDefault();
+  $(this).html('<div class="spinner-border" role="status"></div>');
   var itemTagsValue = $('#itemTags').val();
   var $tds = $('#validation-table tr > td').filter(function () {
     return $.trim($(this).text()) == itemTagsValue;
   });
+
   if (
     $tds.length != 0 ||
     ptag_array.includes(itemTagsValue) ||
     lotNumber_array.includes(itemTagsValue)
   ) {
     Swal.fire(itemTagsValue + ' is already exist', '', 'error');
+    $('.btn-outlined').html('ADD');
   } else {
     checkInput();
+    $('.btn-outlined').html('ADD');
   }
 
-  $('.search-input').val('');
+  $('.search-input').prop('readonly', true);
   $('.btn-outlined').prop('disabled', true);
 });
 
@@ -229,9 +235,9 @@ function countRows() {
   $('.item-count').val(rowCount);
 
   if (rowCount > 0) {
-    $('.form-btn').prop('disabled', false);
+    $('.form-btn').removeClass('disable');
   } else {
-    $('.form-btn').prop('disabled', true);
+    $('.form-btn').addClass('disable');
     rowCount = 0;
   }
 }
@@ -276,9 +282,9 @@ function checkInput() {
             item_tags +
             '" name="item_list_input[]"></input><input type="hidden" value="' +
             respData.poContentId +
-            '" name="poContent_list_input[]"></input>' +
+            '" name="poContent_list_input[]"></input><b>' +
             item_tags +
-            '<span><i class="fa fa-times"></i></span></td></tr>'
+            '</b><span><i class="fa fa-times"></i></span></td></tr>'
         );
         $('.form-btn').prop('disabled', false);
         countRows();
@@ -287,6 +293,8 @@ function checkInput() {
         pushLot();
         updateLocalStorage();
       }
+      $('.search-input').val('');
+      $('.search-input').prop('readonly', false);
     },
   });
 }

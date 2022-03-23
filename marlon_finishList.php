@@ -13,6 +13,7 @@
     <title>Receiving Software | Finish List</title>
 </head>
 <body>
+    <div class="loader"></div>
     <div class="container-fluid">
         <header>
             <h3>RECEIVING SOFTWARE</h3>

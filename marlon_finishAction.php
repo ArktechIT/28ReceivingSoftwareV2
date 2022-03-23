@@ -86,7 +86,7 @@
                 $recievingHistoryInsert = mysqli_query($connection, $sqlRh);
 
                 $sql = "UPDATE ppic_workschedule SET status = 1 WHERE lotNumber = '$newLotNumberArray[$n]' AND status = '0' ORDER BY processOrder ASC LIMIT 1";
-                $updateWorkSched = mysqli_query($connection, $sql);
+                // $updateWorkSched = mysqli_query($connection, $sql);
 
                 $n--;
             }

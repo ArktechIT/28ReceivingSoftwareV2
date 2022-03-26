@@ -7,6 +7,14 @@
 	include('PHP Modules/gerald_payablesFunction.php');
 	ini_set("display_errors", "on");
 
+	$employeeId = $_SESSION['idNumber'];
+
+	$sqlMain = "INSERT INTO `system_itemlocation`(`lotNumber`, `location`, `inputDateTime`, `idNumber`, `locationType`) VALUES";
+	$sqlValuesArray = array();
+	$counter = 0;	
+
+	$lotNumberArray = array();
+
 	$sql = "SELECT poNumber, lotNumber, quantity, itemDescription, returnedQuantity FROM system_receivingHistory WHERE idNumber LIKE ' ' AND status = 1";
 	$queryReceiving = $db->query($sql);
 	if($queryReceiving->num_rows > 0)
@@ -53,8 +61,8 @@
 			if($quantity < $workingQuantity)
 			{
 				$remarks = "Partial";
-				partialLote($lotNumber,($workingQuantity - $quantity),$startFromProcessOrder,$employeeId,$remarks,0);
-				updateAvailability($lotNumber);
+				// partialLote($lotNumber,($workingQuantity - $quantity),$startFromProcessOrder,$employeeId,$remarks,0);
+				// updateAvailability($lotNumber);
 			}
 			
 			$apiPoFlag = 0;
@@ -116,8 +124,8 @@
 							$startFromProcessOrder = $resultWorkSchedule['processOrder'];
 						}
 						$remarks = "Returned Item Quantity ".$returnedQuantity;
-						partialLote($lotNumber,$returnedQuantity,$startFromProcessOrder,$employeeId,$remarks,1);
-						updateAvailability($lotNumber);
+						// partialLote($lotNumber,$returnedQuantity,$startFromProcessOrder,$employeeId,$remarks,1);
+						// updateAvailability($lotNumber);
 					}
 				}
 			}
@@ -325,7 +333,29 @@
 			}
 			//************************************************** Insert Payables (2019-08-1) **************************************************//
 
+			if(isset($_POST['location']))
+			{
+				$sqlValuesArray[] = "('".$lotNumber."','".$location."',NOW(), '".$_POST['employeeId']."', 0)";
+			}
+			if(isset($_POST['containerId']))
+			{
+				$sqlValuesArray[] = "('".$lotNumber."','".$containerId."',NOW(), '".$_POST['employeeId']."', 1)";
+			}
+			//$sqlValuesArray[] = $sqlValues;
+			$counter++;
+			
+			if($counter == 50)
+			{
+				$sqlInsert = $sqlMain." ".implode(",",$sqlValuesArray);
+				$queryInsert = $db->query($sqlInsert);
+				$sqlValuesArray = array();
+				$counter = 0;
+			}
 		}
-
+		if($counter > 0)
+		{
+			$sqlInsert = $sqlMain." ".implode(",",$sqlValuesArray);
+			$queryInsert = $db->query($sqlInsert);
+		}
 	}	
 ?>

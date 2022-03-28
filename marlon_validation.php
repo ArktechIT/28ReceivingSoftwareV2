@@ -107,7 +107,7 @@
                     {
                         if ($rowPO['itemStatus'] != 2)
                         {
-                            if($number <=0)
+                            if($number <= 0)
                             {
                                 response("PROCEED", $rowPO['poContentId'], $row['productionTag'], $row['lotNum']);
                             }

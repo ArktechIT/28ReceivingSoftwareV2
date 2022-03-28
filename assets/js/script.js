@@ -125,7 +125,7 @@ var quantity = $('input[name="quantity[]"]')
 
 $('#finish-btn').on('click', function (e) {
   e.preventDefault();
-
+  $('.loader').show();
   $.ajax({
     url: 'marlon_finishValidation.php',
     method: 'POST',
@@ -135,6 +135,7 @@ $('#finish-btn').on('click', function (e) {
     },
     success: function (resp) {
       if (resp != 3 && resp != 0) {
+        $('.loader').fadeOut(300);
         Swal.fire({
           title: 'WARNING!',
           html: resp,
@@ -155,6 +156,7 @@ $('#finish-btn').on('click', function (e) {
       }
 
       if (resp == 3) {
+        $('.loader').fadeOut(300);
         Swal.fire({
           title: 'ALL ITEMS ARE ALREADY FINISHED!',
           icon: 'error',
@@ -207,6 +209,7 @@ function finishItems() {
       setTimeout(function () {
         window.location.href = 'index.php';
       }, 1600);
+      $('.loader').fadeOut(300);
     },
   });
   window.localStorage.clear();

@@ -2,9 +2,9 @@
     require ('./includes/marlon_connection.php');
     error_reporting(0);
 
-    function response($resp, $poContentId, $ptag, $lot)
+    function response($resp, $poContentId, $ptag, $lot, $supplier = '')
     {
-        echo json_encode(array("resp"=> $resp, "poContentId"=> $poContentId, "PTAG" => $ptag, "lot" => $lot)); 
+        echo json_encode(array("resp"=> $resp, "poContentId"=> $poContentId, "PTAG" => $ptag, "lot" => $lot, "supplier" => $supplier)); 
     }
 
     if(isset($_GET['itemTag']))
@@ -98,7 +98,7 @@
                 
                 while($number>=0)
                 {
-                    $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents
+                    $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree, supplierAlias FROM purchasing_pocontents
                     WHERE dataThree = '$remarksArray[$number]' AND poContentId IN ('".implode("','",$poContentIdArray)."')";
                     $checkPO = mysqli_query($connection, $sqlPo);
                     $rowPO = mysqli_fetch_array($checkPO);
@@ -109,7 +109,7 @@
                         {
                             if($number <= 0)
                             {
-                                response("PROCEED", $rowPO['poContentId'], $row['productionTag'], $row['lotNum']);
+                                response("PROCEED", $rowPO['poContentId'], $row['productionTag'], $row['lotNum'], $rowPO['supplierAlias']);
                             }
                         }
                         else
@@ -130,7 +130,7 @@
             }
             else
             {
-                $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree FROM purchasing_pocontents
+                $sqlPo = "SELECT lotNumber, poContentId, itemStatus, dataThree, supplierAlias FROM purchasing_pocontents
                 WHERE poContentId IN ('".implode("','",$poContentIdArray)."')";
                 $checkPO = mysqli_query($connection, $sqlPo);
                 $rowPO = mysqli_fetch_array($checkPO);
@@ -139,7 +139,7 @@
                 {
                     if ($rowPO['itemStatus'] != 2)
                     {
-                        response("PROCEED", $rowPO['poContentId'], $row['productionTag'], $row['lotNum']);
+                        response("PROCEED", $rowPO['poContentId'], $row['productionTag'], $row['lotNum'], $rowPO['supplierAlias']);
                     }
                     else
                     {

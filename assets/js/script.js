@@ -1,12 +1,12 @@
 $(document).ready(function () {
   $('.loader').fadeOut(400);
-
   if (localStorage.content != '') {
     $('#validation-table').html(localStorage.content);
     removeRow();
     pushPtag();
     pushLot();
   }
+  $('#supplier_name').val(localStorage.supplier);
 
   countRows();
 
@@ -245,6 +245,7 @@ function countRows() {
     $('.form-btn').removeClass('disable');
   } else {
     $('.form-btn').addClass('disable');
+    localStorage.removeItem('supplier');
     rowCount = 0;
   }
 }
@@ -260,6 +261,7 @@ function removeRow() {
 
     countRows();
     updateLocalStorage();
+    $('#supplier_name').val(localStorage.supplier);
   });
 }
 
@@ -279,11 +281,16 @@ function checkInput() {
       var respData = JSON.parse(response);
       if (respData.poContentId == 'none') {
         Swal.fire(respData.resp, '', 'error');
+      } else if (
+        localStorage.getItem('supplier') != null &&
+        respData.supplier != localStorage.supplier
+      ) {
+        Swal.fire('WRONG SUBCON/SUPPLIER', '', 'error');
       } else {
         $('tbody').append(
-          '<tr><td><input type=hidden name="ptag[]" value="' +
+          '<tr><td><input type="hidden" name="ptag[]" value="' +
             respData.PTAG +
-            '"></input><input type=hidden name="lot[]" value="' +
+            '"></input><input type="hidden" name="lot[]" value="' +
             respData.lot +
             '"></input><input type="hidden" value="' +
             item_tags +
@@ -293,12 +300,18 @@ function checkInput() {
             item_tags +
             '</b><span><i class="fa fa-times"></i></span></td></tr>'
         );
+
         $('.form-btn').prop('disabled', false);
         countRows();
         removeRow();
         pushPtag();
         pushLot();
         updateLocalStorage();
+
+        if (localStorage.getItem('supplier') === null) {
+          localStorage.setItem('supplier', respData.supplier);
+          $('#supplier_name').val(localStorage.supplier);
+        }
       }
       $('.btn-outlined').html('ADD');
       $('.search-input').val('');

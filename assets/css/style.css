@@ -166,7 +166,14 @@ table tbody tr:hover {
   width: 50px;
 }
 
-#item-count:focus {
+#supplier_name {
+  border: none !important;
+  font-weight: 500;
+  text-align: right;
+}
+
+#item-count:focus,
+#supplier_name:focus {
   border-color: inherit;
   box-shadow: none;
   outline: none;

@@ -29,7 +29,14 @@
                         </div>
                     </div>
                     <div class="table-list">
-                    <span class="pb-2" style="float: left">Item(s): <input type="text" class="item-count" id="item-count" tabindex="-1" value="0" readonly></span>
+                        <div class="row justify-content-between">
+                            <div class="col-4">
+                                <span class="pb-2" style="float: left">Item(s): <input type="text" class="item-count" id="item-count" tabindex="-1" value="0" readonly></span>
+                            </div>
+                            <div class="col-5">
+                                <input type="text" class="supplier_name" id="supplier_name" tabindex="-1" value="" readonly>
+                            </div>
+                        </div>
                         <table class="table table-bordered table-input" id="validation-table">
                             <tbody>
                             </tbody>

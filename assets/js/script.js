@@ -125,6 +125,51 @@ var quantity = $('input[name="quantity[]"]')
 
 $('#finish-btn').on('click', function (e) {
   e.preventDefault();
+  Swal.fire({
+    title: 'DO YOU WANT TO INPUT A LOCATION?',
+    text: '',
+    icon: 'question',
+    showDenyButton: true,
+    confirmButtonColor: '#4a69bd',
+    denyButtonColor: '#dc3545',
+    confirmButtonText: 'YES',
+    denyButtonText: 'NO',
+    allowOutsideClick: false,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: '',
+        html: `<form method="POST" autocomplete="off">
+                <span>Location:</span><input type="text" id="location" name="location" class="swal2-input" placeholder="Location">
+                <span>Bucket:</span>&nbsp;&nbsp;&nbsp<input type="text" id="bucket" name="bucket" class="swal2-input" placeholder="Bucket">
+              </form>`,
+        confirmButtonText: 'OK',
+        focusConfirm: false,
+        allowOutsideClick: false,
+
+        preConfirm: () => {
+          const location = Swal.getPopup().querySelector('#location').value;
+          const bucket = Swal.getPopup().querySelector('#bucket').value;
+          if (!location || !bucket) {
+            Swal.showValidationMessage(`ALL FIELDS ARE REQUIRED`);
+          }
+          return { location: location, bucket: bucket };
+        },
+      }).then((result) => {
+        checkItem();
+      });
+    } else {
+      checkItem();
+    }
+  });
+
+  $(this).html('PLEASE WAIT');
+  $(this).addClass('disable');
+  $(this).blur();
+});
+
+//-----------------------FUNCTIONS---------------------------//
+function checkItem() {
   $('.loader').show();
   $.ajax({
     url: 'marlon_finishValidation.php',
@@ -154,7 +199,6 @@ $('#finish-btn').on('click', function (e) {
           }
         });
       }
-
       if (resp == 3) {
         $('.loader').fadeOut(300);
         Swal.fire({
@@ -169,19 +213,13 @@ $('#finish-btn').on('click', function (e) {
           }
         });
       }
-
       if (resp == 0) {
         finishItems();
       }
     },
   });
+}
 
-  $(this).html('PLEASE WAIT');
-  $(this).addClass('disable');
-  $(this).blur();
-});
-
-//-----------------------FUNCTIONS---------------------------//
 function finishItems() {
   $.ajax({
     url: 'marlon_finishAction.php?action=finish',

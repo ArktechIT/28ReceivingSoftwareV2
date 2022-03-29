@@ -139,8 +139,10 @@ $('#finish-btn').on('click', function (e) {
     if (result.isConfirmed) {
       Swal.fire({
         title: '',
-        html: `<span>Location:</span><input type="text" id="location" name="location" class="swal2-input" placeholder="Location">
-              <span>Bucket:</span>&nbsp;&nbsp;&nbsp<input type="text" id="bucket" name="bucket" class="swal2-input" placeholder="Bucket">`,
+        html: `<form method="POST" autocomplete="off">
+                <span>Location:</span><input type="text" id="location" name="location" class="swal2-input" placeholder="Location">
+                <span>Bucket:</span>&nbsp;&nbsp;&nbsp<input type="text" id="bucket" name="bucket" class="swal2-input" placeholder="Bucket">
+              </form>`,
         confirmButtonText: 'OK',
         focusConfirm: false,
         allowOutsideClick: false,

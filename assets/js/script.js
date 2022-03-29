@@ -123,6 +123,9 @@ var quantity = $('input[name="quantity[]"]')
   })
   .get();
 
+var locationVal = '';
+var bucketVal = '';
+
 $('#finish-btn').on('click', function (e) {
   e.preventDefault();
   Swal.fire({
@@ -153,7 +156,8 @@ $('#finish-btn').on('click', function (e) {
           if (!location || !bucket) {
             Swal.showValidationMessage(`ALL FIELDS ARE REQUIRED`);
           }
-          return { location: location, bucket: bucket };
+          locationVal = location;
+          bucketVal = bucket;
         },
       }).then((result) => {
         checkItem();
@@ -231,6 +235,8 @@ function finishItems() {
       'item_poNumber[]': item_poNumber,
       'item_desc[]': item_desc,
       'quantity[]': quantity,
+      itemLocation: locationVal,
+      itemBucket: bucketVal,
     },
     success: function (data) {
       if (data == 'not set') {

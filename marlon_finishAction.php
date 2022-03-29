@@ -13,8 +13,8 @@
     	$poNumber = $_POST['item_poNumber'];
     	$itemDesc = $_POST['item_desc'];
     	$quantity = $_POST['quantity'];
-        $location = $_POST['location']; //LOCATION
-        $bucket = $_POST['bucket']; //BUCKET
+        $location = $_POST['itemLocation']; //LOCATION
+        $bucket = $_POST['itemBucket']; //BUCKET
 
         class PDF extends FPDF
         {

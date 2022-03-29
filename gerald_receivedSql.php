@@ -335,11 +335,11 @@
 
 			if(isset($_POST['location']))
 			{
-				$sqlValuesArray[] = "('".$lotNumber."','".$location."',NOW(), '".$_POST['employeeId']."', 0)";
+				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['location']."',NOW(), '".$_POST['employeeId']."', 0)";
 			}
-			if(isset($_POST['containerId']))
+			if(isset($_POST['bucket']))
 			{
-				$sqlValuesArray[] = "('".$lotNumber."','".$containerId."',NOW(), '".$_POST['employeeId']."', 1)";
+				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['bucket']."',NOW(), '".$_POST['employeeId']."', 1)";
 			}
 			//$sqlValuesArray[] = $sqlValues;
 			$counter++;

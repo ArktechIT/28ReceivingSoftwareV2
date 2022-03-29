@@ -6,7 +6,7 @@ $(document).ready(function () {
     pushPtag();
     pushLot();
   }
-  $('#supplier_name').val(localStorage.supplier);
+  // $('#supplier_name').val(localStorage.supplier);
 
   countRows();
 
@@ -75,7 +75,12 @@ $('.btn-outlined').on('click', function (e) {
     lotNumber_array.includes(itemTagsValue)
   ) {
     $('.loader').fadeOut(300);
-    Swal.fire(itemTagsValue + ' is already exist', '', 'error');
+    Swal.fire({
+      title: itemTagsValue + ' IS ALREADY EXIST',
+      icon: 'error',
+      confirmButtonColor: '#4a69bd',
+      confirmButtonText: 'OK',
+    });
     $('.btn-outlined').html('ADD');
     $('.search-input').val('');
     $('.search-input').prop('readonly', false);
@@ -128,8 +133,10 @@ var bucketVal = '';
 
 $('#finish-btn').on('click', function (e) {
   e.preventDefault();
+  getBucketDataList();
+
   Swal.fire({
-    title: 'DO YOU WANT TO INPUT A LOCATION?',
+    html: '<h4>DO YOU WANT TO INPUT A LOCATION?</h4>',
     text: '',
     icon: 'question',
     showDenyButton: true,
@@ -142,10 +149,12 @@ $('#finish-btn').on('click', function (e) {
     if (result.isConfirmed) {
       Swal.fire({
         title: '',
-        html: `<form method="POST" autocomplete="off">
-                <span>Location:</span><input type="text" id="location" name="location" class="swal2-input" placeholder="Location">
-                <span>Bucket:</span>&nbsp;&nbsp;&nbsp<input type="text" id="bucket" name="bucket" class="swal2-input" placeholder="Bucket">
-              </form>`,
+        html:
+          '<form method="POST" autocomplete="off"><span>Location:</span><input type="text" list="locationList" id="location" name="location" class="swal2-input" placeholder="Location"><datalist id="locationList">' +
+          getLocationDataList() +
+          '</datalist><span>Bucket:</span>&nbsp;&nbsp;&nbsp<input type="text" list="bucketList" id="bucket" name="bucket" class="swal2-input" placeholder="Bucket"><datalist id="bucketList">' +
+          getBucketDataList() +
+          '</form>',
         confirmButtonText: 'OK',
         focusConfirm: false,
         allowOutsideClick: false,
@@ -153,6 +162,18 @@ $('#finish-btn').on('click', function (e) {
         preConfirm: () => {
           const location = Swal.getPopup().querySelector('#location').value;
           const bucket = Swal.getPopup().querySelector('#bucket').value;
+
+          var objLocation = $('#locationList').find(
+            "option[value='" + location + "']"
+          );
+          var objBucket = $('#bucketList').find(
+            "option[value='" + bucket + "']"
+          );
+
+          if (objLocation.length == 0 || objBucket.length == 0) {
+            Swal.showValidationMessage(`INVALID LOCATION OR BUCKET`);
+          }
+
           if (!location || !bucket) {
             Swal.showValidationMessage(`ALL FIELDS ARE REQUIRED`);
           }
@@ -166,13 +187,31 @@ $('#finish-btn').on('click', function (e) {
       checkItem();
     }
   });
-
   $(this).html('PLEASE WAIT');
   $(this).addClass('disable');
   $(this).blur();
 });
 
 //-----------------------FUNCTIONS---------------------------//
+
+function getLocationDataList() {
+  $.ajax({
+    url: 'marlon_locationBucket.php?location=1',
+    success: function (response) {
+      $('#locationList').append(response);
+    },
+  });
+}
+
+function getBucketDataList() {
+  $.ajax({
+    url: 'marlon_locationBucket.php?bucket=1',
+    success: function (response) {
+      $('#bucketList').append(response);
+    },
+  });
+}
+
 function checkItem() {
   $('.loader').show();
   $.ajax({
@@ -189,6 +228,7 @@ function checkItem() {
           title: 'WARNING!',
           html: resp,
           icon: 'warning',
+          confirmButtonColor: '#4a69bd',
           denyButtonText: `CANCEL`,
           showDenyButton: true,
           confirmButtonText: 'OK',
@@ -208,6 +248,7 @@ function checkItem() {
         Swal.fire({
           title: 'ALL ITEMS ARE ALREADY FINISHED!',
           icon: 'error',
+          confirmButtonColor: '#4a69bd',
           confirmButtonText: 'OK',
           allowOutsideClick: false,
         }).then((result) => {
@@ -226,7 +267,7 @@ function checkItem() {
 
 function finishItems() {
   $.ajax({
-    url: 'marlon_finishAction.php?action=finish',
+    url: 'marlon_finishAction.php',
     method: 'POST',
     data: {
       'finished_items[]': finished_items,
@@ -237,6 +278,7 @@ function finishItems() {
       'quantity[]': quantity,
       itemLocation: locationVal,
       itemBucket: bucketVal,
+      finishBtn: 1,
     },
     success: function (data) {
       if (data == 'not set') {
@@ -324,12 +366,22 @@ function checkInput() {
     success: function (response) {
       var respData = JSON.parse(response);
       if (respData.poContentId == 'none') {
-        Swal.fire(respData.resp, '', 'error');
+        Swal.fire({
+          title: respData.resp,
+          icon: 'error',
+          confirmButtonColor: '#4a69bd',
+          confirmButtonText: 'OK',
+        });
       } else if (
         localStorage.getItem('supplier') != null &&
         respData.supplier != localStorage.supplier
       ) {
-        Swal.fire('WRONG SUBCON/SUPPLIER', '', 'error');
+        Swal.fire({
+          title: 'WRONG SUBCON/SUPPLIER',
+          icon: 'error',
+          confirmButtonColor: '#4a69bd',
+          confirmButtonText: 'OK',
+        });
       } else {
         $('tbody').append(
           '<tr><td><input type="hidden" name="ptag[]" value="' +

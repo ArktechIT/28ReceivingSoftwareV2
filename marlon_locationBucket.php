@@ -10,7 +10,7 @@
         while ($row = $query->fetch_assoc())
         {
             extract($row);
-            $locationDataList .= '<option value="'.trim($locationRackNumber).'">';
+            $locationDataList .= '<option value="'.trim($locationRackNumber).'">'.trim($locationRackNumber).'</option>';
         }
         echo $locationDataList;
     }

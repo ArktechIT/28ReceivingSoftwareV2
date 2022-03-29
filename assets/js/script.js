@@ -156,6 +156,8 @@ $('#finish-btn').on('click', function (e) {
           getBucketDataList() +
           '</form>',
         confirmButtonText: 'OK',
+        confirmButtonColor: '#4a69bd',
+
         focusConfirm: false,
         allowOutsideClick: false,
 

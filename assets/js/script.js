@@ -6,7 +6,7 @@ $(document).ready(function () {
     pushPtag();
     pushLot();
   }
-  // $('#supplier_name').val(localStorage.supplier);
+  $('#supplier_name').val(localStorage.supplier);
 
   countRows();
 

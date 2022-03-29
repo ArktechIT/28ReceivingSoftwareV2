@@ -160,16 +160,30 @@ table tbody tr:hover {
   box-shadow: 0 0.5px 0.5px rgba(0, 0, 0, 0.075) inset, 0 0 4px #4a69bd;
 }
 
+.top-left {
+  margin: 0px -10px 0px -12px;
+  float: left;
+  font-size: 14px;
+}
+
+.top-right {
+  margin: 0px -10px 0px -12px;
+  float: right;
+  font-size: 14px;
+}
+
 #item-count {
   border: none !important;
   font-weight: 500;
   width: 50px;
+  font-size: 13px;
 }
 
 #supplier_name {
   border: none !important;
   font-weight: 500;
   text-align: right;
+  font-size: 13px;
 }
 
 #item-count:focus,
@@ -194,8 +208,8 @@ table tbody tr:hover {
   outline: none;
 }
 
-.swal2-confirm {
-  background-color: #4a69bd !important;
+.swal2-input {
+  height: 2.25em !important;
 }
 
 span[class^='dot'] {

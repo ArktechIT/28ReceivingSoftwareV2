@@ -1,11 +1,10 @@
 <?php
 	require('./includes/marlon_connection.php');
-	// include '../../V4/Common Data/PHP Modules/gerald_functions.php';
 	require('FPDF/fpdf.php');
     require('marlon_emailPdf.php');
     error_reporting(0);
 
-	if(isset($_GET['action']) && $_GET['action'] == 'finish')
+	if(isset($_POST['finishBtn']))
     {
         $lotNumber = $_POST['finished_items'];
     	$supplier = $_POST['item_supplier'];
@@ -13,8 +12,8 @@
     	$poNumber = $_POST['item_poNumber'];
     	$itemDesc = $_POST['item_desc'];
     	$quantity = $_POST['quantity'];
-        $location = $_POST['location']; //LOCATION
-        $bucket = $_POST['bucket']; //BUCKET
+        $location = $_POST['itemLocation'];
+        $bucket = $_POST['itemBucket'];
 
         class PDF extends FPDF
         {

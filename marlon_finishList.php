@@ -23,6 +23,8 @@
                 <h5>FINISHED LIST:</h5>
                 <form method="POST" action="marlon_finishAction.php" id="finish-form">
                     <div class="item-table-list">
+                        <input type="hidden" name="itemLocation" id="itemLocation">
+                        <input type="hidden" name="itemBucket" id="itemBucket">
                         <table class="table table-bordered table-finish">
                         <span class="pb-2" style="float: left">Item(s): <input type="text" class="item-count" id="item-count" value="0" tabindex="-1" readonly></span>
                             <tbody>

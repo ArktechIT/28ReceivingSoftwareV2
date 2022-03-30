@@ -154,7 +154,7 @@ $('#finish-btn').on('click', function (e) {
           getLocationDataList() +
           '</datalist><span>Bucket:</span>&nbsp;&nbsp;&nbsp<input type="text" list="bucketList" id="bucket" name="bucket" class="swal2-input" placeholder="Bucket"><datalist id="bucketList">' +
           getBucketDataList() +
-          '</form>',
+          '</datalist></form>',
         confirmButtonText: 'OK',
         confirmButtonColor: '#4a69bd',
 

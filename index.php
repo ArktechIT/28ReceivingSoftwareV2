@@ -1,3 +1,17 @@
+<?php
+    require ('./includes/marlon_connection.php');
+    $sql = "SELECT 
+            e.firstName, 
+            e.surName, 
+            p.positionName 
+            FROM hr_employee e 
+            LEFT JOIN hr_positions p 
+            ON p.positionId=e.position 
+            WHERE e.idNumber = 0063";
+    $query = $connection->query($sql);
+    $result = $query->fetch_assoc();
+    extract($result);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +32,25 @@
         <header>
             <h3>RECEIVING SOFTWARE</h3>
         </header>
-        <div class="card big-card text-center">
+        <div class="user-profile mx-auto text-center">
+            <div class="row no-gutters">
+                <div class="col-6">
+                    <div class="img-box">
+                        <img src="./assets/images/profile.jpg" class="rounded-circle mx-auto border border-white" width="65px" height="65px" alt="Profile">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="info-box">
+                        <p>
+                            <b><?php echo $firstName.' '.$surName?></b>
+                            <br>
+                            <small class="user-position"><?php echo $positionName?></small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card list-card text-center">
             <div class="card-body">
                 <h6>INPUT/SCAN/BARCODE ITEMS:</h6>
                 <form method="POST" action="marlon_finishList.php" class="add-form" autocomplete="off">

@@ -64,8 +64,32 @@ header .finish-h5 {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 } */
 
+.user-profile {
+  padding: 2px;
+  width: 50%;
+  height: 80px;
+  margin: auto;
+}
+
+.img-box {
+  text-align: right;
+  margin-right: 70px;
+}
+
+.info-box {
+  margin-top: 8px;
+  text-align: left;
+  margin-left: -60px;
+}
+
+.list-card {
+  width: 50%;
+  height: 80vh;
+  margin: auto;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
 .big-card {
-  position: relative;
   width: 50%;
   height: 89vh;
   margin: auto;
@@ -121,8 +145,8 @@ header .finish-h5 {
   overflow-y: scroll;
   overflow-x: hidden;
   margin: 5px;
-  min-height: 67vh;
-  border: 1px solid #4a69bd;
+  min-height: 60vh;
+  border: 1px solid #ced4da;
   border-radius: 5px;
   padding: 10px 25px 10px 25px;
 }
@@ -132,7 +156,7 @@ header .finish-h5 {
   overflow-x: hidden;
   margin: 5px;
   min-height: 72vh;
-  border: 1px solid #4a69bd;
+  border: 1px solid #ced4da;
   border-radius: 5px;
   padding: 10px 25px 10px 25px;
 }
@@ -282,6 +306,15 @@ span[class^='dot'] {
     width: 90%;
   }
 
+  .img-box {
+    margin-right: 100px;
+  }
+
+  .info-box {
+    margin-top: 0px;
+    margin-left: -20px;
+  }
+
   #supplier_name {
     margin-left: -100px;
   }
@@ -298,6 +331,10 @@ span[class^='dot'] {
     color: white;
     width: 280px;
   }
+
+  .list-card {
+    height: 78vh;
+  }
   .big-card {
     height: 85vh;
     min-height: 80vh;
@@ -308,6 +345,6 @@ span[class^='dot'] {
   }
 
   .table-list {
-    height: 62vh;
+    height: 50vh;
   }
 }

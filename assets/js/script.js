@@ -150,11 +150,11 @@ $('#finish-btn').on('click', function (e) {
       Swal.fire({
         title: '',
         html:
-          '<form method="POST" autocomplete="off"><span>Location:</span><input type="text" list="locationList" id="location" name="location" class="swal2-input" placeholder="Location"><datalist id="locationList">' +
+          '<form method="POST" autocomplete="off"><div class="form-group"><label for="location">Location:</label><input type="text" list="locationList" id="location" name="location" class="swal2-input" placeholder="Location"><datalist id="locationList">' +
           getLocationDataList() +
-          '</datalist><span>Bucket:</span>&nbsp;&nbsp;&nbsp<input type="text" list="bucketList" id="bucket" name="bucket" class="swal2-input" placeholder="Bucket"><datalist id="bucketList">' +
+          '</datalist></div><div class="form-group"><label for="bucket">Bucket:&nbsp;&nbsp;&nbsp;</label><input type="text" list="bucketList" id="bucket" name="bucket" class="swal2-input" placeholder="Bucket"></div><datalist id="bucketList">' +
           getBucketDataList() +
-          '</datalist></form>',
+          '</datalist></div></form>',
         confirmButtonText: 'OK',
         confirmButtonColor: '#4a69bd',
 

@@ -7,7 +7,7 @@
 	include('PHP Modules/gerald_payablesFunction.php');
 	ini_set("display_errors", "on");
 
-	$employeeId = $_SESSION['idNumber'];
+	$employeeId = $idNumber;
 
 	$sqlMain = "INSERT INTO `system_itemlocation`(`lotNumber`, `location`, `inputDateTime`, `idNumber`, `locationType`) VALUES";
 	$sqlValuesArray = array();
@@ -15,7 +15,7 @@
 
 	$lotNumberArray = array();
 
-	$sql = "SELECT poNumber, lotNumber, quantity, itemDescription, returnedQuantity FROM system_receivingHistory WHERE idNumber LIKE ' ' AND status = 1";
+	$sql = "SELECT poNumber, lotNumber, quantity, itemDescription, returnedQuantity FROM system_receivingHistory WHERE idNumber LIKE '".$employeeId."' AND status = 1";
 	$queryReceiving = $db->query($sql);
 	if($queryReceiving->num_rows > 0)
 	{
@@ -339,7 +339,7 @@
 			}
 			if(isset($_POST['bucket']))
 			{
-				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['bucket']."',NOW(), '".$$employeeId]."', 1)";
+				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['bucket']."',NOW(), '".$employeeId."', 1)";
 			}
 			//$sqlValuesArray[] = $sqlValues;
 			$counter++;

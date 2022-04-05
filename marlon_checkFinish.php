@@ -1,6 +1,5 @@
 <?php
     require ('./includes/marlon_connection.php');
-    session_start();
 
     if(isset($_POST['filter']))
     {

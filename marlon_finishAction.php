@@ -3,6 +3,7 @@
 	require('FPDF/fpdf.php');
     require('marlon_emailPdf.php');
     error_reporting(0);
+    session_start();
 
 	if(isset($_POST['finishBtn']))
     {
@@ -14,6 +15,7 @@
     	$quantity = $_POST['quantity'];
         $location = $_POST['itemLocation'];
         $bucket = $_POST['itemBucket'];
+        $idNumber = $_SESSION['idNumber'];
 
         class PDF extends FPDF
         {
@@ -39,7 +41,14 @@
         }
         
         //CHECK IF AN ITEM IS ALREADY FINISHED
-        $sql = "SELECT lotNumber, status, processCode FROM ppic_workschedule WHERE lotNumber IN ('".implode("','", $lotNumber)."') AND status = 0 AND (processCode = 137 OR processCode = 138) ORDER BY processOrder ASC";
+        $sql = "SELECT 
+                lotNumber, 
+                status, 
+                processCode 
+                FROM ppic_workschedule 
+                WHERE lotNumber 
+                IN ('".implode("','", $lotNumber)."') AND status = 0 AND (processCode = 137 OR processCode = 138) 
+                ORDER BY processOrder ASC";
         $checkReceivingProcess = mysqli_query($connection, $sql);
 
         if(mysqli_num_rows($checkReceivingProcess) > 0)
@@ -83,7 +92,7 @@
             while($n>=0)
             {
                 $sqlRh = "INSERT INTO system_receivingHistory (poNumber, lotNumber, itemName, itemDescription, quantity, supplier, idNumber, pallet, batchId, date, status)
-                VALUES ('$newPoNumberArray[$n]', '$newLotNumberArray[$n]', '$newItemNameArray[$n]', '$newItemDescArray[$n]', '$newQuantityArray[$n]', '$newSupplierArray[$n]', ' ', ' ', '', NOW(), 1)";
+                VALUES ('$newPoNumberArray[$n]', '$newLotNumberArray[$n]', '$newItemNameArray[$n]', '$newItemDescArray[$n]', '$newQuantityArray[$n]', '$newSupplierArray[$n]', '$idNumber', ' ', '', NOW(), 1)";
                 $recievingHistoryInsert = mysqli_query($connection, $sqlRh);
 
                 $sql = "UPDATE ppic_workschedule SET status = 1 WHERE lotNumber = '$newLotNumberArray[$n]' AND status = '0' ORDER BY processOrder ASC LIMIT 1";

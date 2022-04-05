@@ -1,3 +1,4 @@
+<?php  require ('./includes/marlon_session.php');?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

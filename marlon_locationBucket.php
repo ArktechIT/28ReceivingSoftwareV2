@@ -17,7 +17,7 @@
 
     if(isset($_GET['bucket']) && $_GET['bucket'] == 1)
     {
-        $sql = "SELECT containerNumber FROM system_container WHERE containerType = 3 OR containerType = 4";
+        $sql = "SELECT containerNumber FROM system_container";
         $query = $connection->query($sql);
 
         $bucketDataList = '';

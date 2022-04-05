@@ -4,7 +4,8 @@
     $sql = "SELECT 
             e.firstName, 
             e.surName, 
-            p.positionName 
+            e.picture,
+            p.positionName
             FROM hr_employee e 
             LEFT JOIN hr_positions p 
             ON p.positionId=e.position 
@@ -37,7 +38,7 @@
             <div class="row no-gutters">
                 <div class="col-6">
                     <div class="img-box">
-                        <img src="./assets/images/profile.jpg" class="rounded-circle mx-auto border border-white" width="65px" height="65px" alt="Profile">
+                        <img src="/V4/11-A%20Employee%20List%20V2/profilepictures/<?php echo $picture;?>" class="rounded-circle mx-auto border border-white" width="65px" height="65px" alt="Profile">
                     </div>
                 </div>
                 <div class="col-6">

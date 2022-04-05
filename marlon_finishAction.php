@@ -91,9 +91,36 @@
             //FINISHING THE ITEMS
             while($n>=0)
             {
-                $sqlRh = "INSERT INTO system_receivingHistory (poNumber, lotNumber, itemName, itemDescription, quantity, supplier, idNumber, pallet, batchId, date, status)
-                VALUES ('$newPoNumberArray[$n]', '$newLotNumberArray[$n]', '$newItemNameArray[$n]', '$newItemDescArray[$n]', '$newQuantityArray[$n]', '$newSupplierArray[$n]', '$idNumber', ' ', '', NOW(), 1)";
+                $sqlRh = "INSERT INTO system_receivingHistory 
+                	(
+                    	poNumber, 
+                		lotNumber, 
+                		itemName, 
+                		itemDescription,
+                		quantity, 
+                		supplier, 
+                		idNumber, 
+                		pallet, 
+                		batchId, 
+                		date, 
+                		status
+                    )
+                VALUES 
+                	(
+                    	'$newPoNumberArray[$n]', 
+                    	'$newLotNumberArray[$n]', 
+                    	'".mysqli_real_escape_string($connection, $newItemNameArray[$n])."', 
+                    	'".mysqli_real_escape_string($connection, $newItemDescArray[$n])."', 
+                    	'$newQuantityArray[$n]', 
+                   		'$newSupplierArray[$n]', 
+                    	'$idNumber', 
+                    	' ', 
+                    	'', 
+                    	NOW(), 
+                    	1
+                    )";
                 $recievingHistoryInsert = mysqli_query($connection, $sqlRh);
+				
 
                 $sql = "UPDATE ppic_workschedule SET status = 1 WHERE lotNumber = '$newLotNumberArray[$n]' AND status = '0' ORDER BY processOrder ASC LIMIT 1";
                 // $updateWorkSched = mysqli_query($connection, $sql);

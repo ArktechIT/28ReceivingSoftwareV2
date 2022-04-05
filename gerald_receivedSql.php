@@ -333,13 +333,13 @@
 			}
 			//************************************************** Insert Payables (2019-08-1) **************************************************//
 
-			if(isset($_POST['location']))
+			if(isset($_POST['itemLocation']))
 			{
-				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['location']."',NOW(), '".$employeeId."', 0)";
+				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['itemLocation']."',NOW(), '".$employeeId."', 0)";
 			}
-			if(isset($_POST['bucket']))
+			if(isset($_POST['itemBucket']))
 			{
-				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['bucket']."',NOW(), '".$employeeId."', 1)";
+				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['itemBucket']."',NOW(), '".$employeeId."', 1)";
 			}
 			//$sqlValuesArray[] = $sqlValues;
 			$counter++;

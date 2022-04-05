@@ -89,6 +89,7 @@
             }
 
             //FINISHING THE ITEMS
+            $genbatchId = date('Ymdhis');
             while($n>=0)
             {
                 $sqlRh = "INSERT INTO system_receivingHistory 
@@ -115,12 +116,11 @@
                    		'$newSupplierArray[$n]', 
                     	'$idNumber', 
                     	' ', 
-                    	'', 
+                    	'$genbatchId', 
                     	NOW(), 
                     	1
                     )";
                 $recievingHistoryInsert = mysqli_query($connection, $sqlRh);
-				
 
                 $sql = "UPDATE ppic_workschedule SET status = 1 WHERE lotNumber = '$newLotNumberArray[$n]' AND status = '0' ORDER BY processOrder ASC LIMIT 1";
                 $updateWorkSched = mysqli_query($connection, $sql);
@@ -128,105 +128,83 @@
                 $n--;
             }
 
-            $sql1 = "SELECT * FROM system_receivingHistory WHERE batchId = '' GROUP BY supplier";
-            $groupReceiving = mysqli_query($connection, $sql1);
+            //GENERATE PR
+            $pdf=new PDF('L','mm','A4');
+            $pdf->SetLeftMargin(12);
+            $pdf->AddPage();
+            
+            $pdf->SetFont('Arial','B',12);
+            $pdf->Ln();$pdf->Ln();
+            $pdf->Image('./assets/images/Ared.jpg',11,7,10,10);
+            $pdf->Cell(0,3,'       ARKTECH PHILIPPINES INCORPORATED',0,0,'L');
+            $pdf->Ln();$pdf->Ln();
+            $pdf->SetFont('Arial','B',10);
+            $pdf->Cell(0,3,'         FPIP Sto. Tomas, Batangas',0,0,'L');
+            $pdf->SetFont('Arial','B',30);
+            $pdf->Cell(-20,2,'PROOF OF RECEIPT',0,0,'R');
+            $pdf->Ln();$pdf->Ln();
+            $pdf->SetFont('Arial','B',10);
+            $pdf->Cell(0,8,'         Tel #: 043-405-6140/6142 Fax #: 043-405-6138',0,0,'L');
+            $pdf->Ln(); $pdf->Ln();
+            $pdf->SetFont('Arial','',10);
 
-            while($result = mysqli_fetch_array($groupReceiving))
+            $pdf->Cell(30,5,'Supplier Name : ',0,0,'L');
+            $pdf->Cell(0,5,$newSupplierArray[0],0,0,'L');
+            $pdf->Ln();
+            $pdf->Cell(30,5,'Receive Date : ',0,0,'L');	
+            $pdf->Cell(0,5,date('Y-m-d'),0,0,'L');
+
+            $pdf->SetFont('Arial','B',9);
+            $pdf->Ln(8);
+            $pdf->Cell(12,8,'#',1,0,'C');
+            $pdf->Cell(23,8,'PO Number',1,0,'C');
+            $pdf->Cell(29,8,'Lot Number',1,0,'C');
+            $pdf->Cell(91,8,'Item Name',1,0,'C');
+            $pdf->Cell(104,8,'Item Description',1,0,'C');
+
+            $count = 1;
+            
+            $sqlBatch = "SELECT * FROM system_receivingHistory WHERE batchId = '$genbatchId'";
+            $receivingBatchId = mysqli_query($connection, $sqlBatch);
+            
+            while ($result = mysqli_fetch_array($receivingBatchId))
             {
-                $genbatchId = date('Ymdhis');
-                $sql2 = "UPDATE system_receivingHistory SET batchId = '$genbatchId' 
-                WHERE batchId = '' AND supplier = '".$result['supplier']."'";
-                $updateReceiving = mysqli_query($connection, $sql2);
-
-                sleep(1);
+                $date = $result['date'];
+                $supplierAlias = $result['supplier'];
+                $poNumber = $result['poNumber'];
+                $lotNumber = $result['lotNumber'];
+                $itemName = $result['itemName'];
+                $itemDescription = $result['itemDescription'];
+                
+                $pdf->Ln();
+                $pdf->SetFont('Arial','',9);
+                $pdf->Cell(12,5,$count,1,0,'C');
+                $pdf->Cell(23,5,$poNumber,1,0,'C');
+                $pdf->Cell(29,5,$lotNumber,1,0,'C');
+                $pdf->Cell(91,5,$itemName,1,0,'C');//87
+                //~ $pdf->Cell(100,5,$itemDescription,1,0,'C');
+                $pdf->AutoFitCell(104,5,'Arial','',9,$itemDescription,1,0,'C');
+                $pdf->SetFont('Arial','',9);
+                $count++;
             }
 
-
-            //GENERATE PR
-            $sqlReceiving = "SELECT * FROM system_receivingHistory WHERE status = 1 GROUP BY batchId";
-            $receivingQuery = mysqli_query($connection, $sqlReceiving);
-            
-            while ($receivingRecord = mysqli_fetch_array($receivingQuery))
+            $pdf->Ln();
+            $pdf->Cell(241,5,'',0,0,'C');
+            $pdf->SetFont('Arial','',9);
+            $pdf->Ln();
+            $pdf->Cell(50,5,'Received By :',0,0,'C');
+            $pdf->Cell(50,5,'',0,0,'C');
+            $pdf->Cell(50,5,'Delivered By',0,0,'C'); // Ace
+            $pdf->Ln();
+            $pdf->Cell(50,5,'',0,0,'C');
+            $pdf->Ln();
+            $pdf->Cell(50,5,'Employee Signature over printed name','T',0,'C');
+            $pdf->Cell(50,5,'',0,0,'C');
+            $pdf->Cell(50,5,'Employee Signature over printed name','T',0,'C'); // Ace
+            $path = "pr_temp/".$genbatchId.".pdf";
+            if(!file_exists($path))
             {
-                $batchId = $receivingRecord['batchId'];
-
-                $pdf=new PDF('L','mm','A4');
-                $pdf->SetLeftMargin(12);
-                $pdf->AddPage();
-                
-                $pdf->SetFont('Arial','B',12);
-                $pdf->Ln();$pdf->Ln();
-                $pdf->Image('./assets/images/Ared.jpg',11,7,10,10);
-                $pdf->Cell(0,3,'       ARKTECH PHILIPPINES INCORPORATED',0,0,'L');
-                $pdf->Ln();$pdf->Ln();
-                $pdf->SetFont('Arial','B',10);
-                $pdf->Cell(0,3,'         FPIP Sto. Tomas, Batangas',0,0,'L');
-                $pdf->SetFont('Arial','B',30);
-                $pdf->Cell(-20,2,'PROOF OF RECEIPT',0,0,'R');
-                $pdf->Ln();$pdf->Ln();
-                $pdf->SetFont('Arial','B',10);
-                $pdf->Cell(0,8,'         Tel #: 043-405-6140/6142 Fax #: 043-405-6138',0,0,'L');
-                $pdf->Ln(); $pdf->Ln();
-                $pdf->SetFont('Arial','',10);
-
-                $pdf->Cell(30,5,'Supplier Name : ',0,0,'L');
-                $pdf->Cell(0,5,$receivingRecord['supplier'],0,0,'L');
-                $pdf->Ln();
-                $pdf->Cell(30,5,'Receive Date : ',0,0,'L');	
-                $pdf->Cell(0,5,$receivingRecord['date'],0,0,'L');
-
-                $pdf->SetFont('Arial','B',9);
-                $pdf->Ln(8);
-                $pdf->Cell(12,8,'#',1,0,'C');
-                $pdf->Cell(23,8,'PO Number',1,0,'C');
-                $pdf->Cell(29,8,'Lot Number',1,0,'C');
-                $pdf->Cell(91,8,'Item Name',1,0,'C');
-                $pdf->Cell(104,8,'Item Description',1,0,'C');
-
-                $count = 1;
-                
-                $sqlBatch = "SELECT * FROM system_receivingHistory WHERE batchId = '$batchId'";
-                $receivingBatchId = mysqli_query($connection, $sqlBatch);
-                
-                while ($result = mysqli_fetch_array($receivingBatchId))
-                {
-                    $date = $result['date'];
-                    $supplierAlias = $result['supplier'];
-                    $poNumber = $result['poNumber'];
-                    $lotNumber = $result['lotNumber'];
-                    $itemName = $result['itemName'];
-                    $itemDescription = $result['itemDescription'];
-                    
-                    $pdf->Ln();
-                    $pdf->SetFont('Arial','',9);
-                    $pdf->Cell(12,5,$count,1,0,'C');
-                    $pdf->Cell(23,5,$poNumber,1,0,'C');
-                    $pdf->Cell(29,5,$lotNumber,1,0,'C');
-                    $pdf->Cell(91,5,$itemName,1,0,'C');//87
-                    //~ $pdf->Cell(100,5,$itemDescription,1,0,'C');
-                    $pdf->AutoFitCell(104,5,'Arial','',9,$itemDescription,1,0,'C');
-                    $pdf->SetFont('Arial','',9);
-                    $count++;
-                }
-
-                $pdf->Ln();
-                $pdf->Cell(241,5,'',0,0,'C');
-                $pdf->SetFont('Arial','',9);
-                $pdf->Ln();
-                $pdf->Cell(50,5,'Received By :',0,0,'C');
-                $pdf->Cell(50,5,'',0,0,'C');
-                $pdf->Cell(50,5,'Delivered By',0,0,'C'); // Ace
-                $pdf->Ln();
-                $pdf->Cell(50,5,'',0,0,'C');
-                $pdf->Ln();
-                $pdf->Cell(50,5,'Employee Signature over printed name','T',0,'C');
-                $pdf->Cell(50,5,'',0,0,'C');
-                $pdf->Cell(50,5,'Employee Signature over printed name','T',0,'C'); // Ace
-                $path = "pr_temp/".$batchId.".pdf";
-                if(!file_exists($path))
-                {
-                    $pdf->Output($path,'F');
-                }
+                $pdf->Output($path,'F');
             }
         }
     }

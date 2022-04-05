@@ -1,4 +1,5 @@
 <?php
+    require ('./includes/marlon_session.php');
     require ('./includes/marlon_connection.php');
     $sql = "SELECT 
             e.firstName, 
@@ -7,7 +8,7 @@
             FROM hr_employee e 
             LEFT JOIN hr_positions p 
             ON p.positionId=e.position 
-            WHERE e.idNumber = 0063";
+            WHERE e.idNumber = '".$_SESSION['idNumber']."'";
     $query = $connection->query($sql);
     $result = $query->fetch_assoc();
     extract($result);

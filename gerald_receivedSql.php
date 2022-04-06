@@ -17,7 +17,7 @@
 	$lotNumberArray = array();
 
 	// $sql = "SELECT poNumber, lotNumber, quantity, itemDescription, returnedQuantity FROM system_receivingHistory WHERE idNumber LIKE '".$employeeId."' AND status = 1";
-	$sql = "SELECT poNumber, lotNumber, quantity, itemDescription, returnedQuantity FROM system_receivingHistory WHERE idNumber LIKE '".$employeeId."' AND and batchId = ".$batchId."";
+	$sql = "SELECT poNumber, lotNumber, quantity, itemDescription, returnedQuantity FROM system_receivingHistory WHERE idNumber LIKE '".$employeeId."' AND batchId = ".$batchId."";
 	$queryReceiving = $db->query($sql);
 	if($queryReceiving->num_rows > 0)
 	{

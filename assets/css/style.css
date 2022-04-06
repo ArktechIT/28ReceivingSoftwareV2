@@ -347,4 +347,13 @@ span[class^='dot'] {
   .table-list {
     height: 50vh;
   }
+
+  @media (max-width: 425px) {
+    .top-right {
+      float: left;
+      margin-top: 20px;
+      margin-left: -29px;
+      text-align: left;
+    }
+  }
 }

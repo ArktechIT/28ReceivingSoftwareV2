@@ -1,6 +1,5 @@
 <?php
 	require('./includes/marlon_connection.php');
-	require('FPDF/fpdf.php');
     require('marlon_emailPdf.php');
     error_reporting(0);
     session_start();
@@ -16,29 +15,6 @@
         $location = $_POST['itemLocation'];
         $bucket = $_POST['itemBucket'];
         $idNumber = $_SESSION['idNumber'];
-
-        class PDF extends FPDF
-        {
-            function AutoFitCell($w='',$h='',$font='',$style='',$fontSize='',$string='',$border='',$ln='',$align='',$fill='',$link='') 
-            {
-                $decrement = 0.1;
-                $limit = round($w)-(round($w)/3);
-                
-                $this->SetFont($font, $style, $fontSize);
-                if(strlen($string)>$limit)
-                {
-                    $string = substr($string,0,$limit);
-                    $string .= '...';
-                }
-                
-                while($this->GetStringWidth($string) > $w)
-                {
-                    $this->SetFontSize($fontSize -= $decrement);
-                }
-                
-                return $this->Cell($w,$h,$string,$border,$ln,$align,$fill,$link);
-            }		
-        }
         
         //CHECK IF AN ITEM IS ALREADY FINISHED
         $sql = "SELECT 

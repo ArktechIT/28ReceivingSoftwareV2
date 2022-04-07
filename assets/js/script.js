@@ -385,7 +385,7 @@ function checkInput() {
           confirmButtonText: 'OK',
         });
       } else {
-        $('tbody').append(
+        $('tbody').prepend(
           '<tr><td><input type="hidden" name="ptag[]" value="' +
             respData.PTAG +
             '"></input><input type="hidden" name="lot[]" value="' +

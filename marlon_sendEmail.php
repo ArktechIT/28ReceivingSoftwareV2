@@ -18,7 +18,7 @@
         </header>
         <div class="card small-card text-center">
             <div class="card-body">
-                <h4 class="mt-5"><i id="sendingFilesText"></i></h4>
+                <h4 class="mt-5" id="send-h4"><i id="sendingFilesText"></i></h4>
             </div>
         </div>
     </div>

@@ -390,7 +390,7 @@ function checkInput() {
 
       if (respData.resp != 'UNKNOWN TAG') {
         link =
-          '<a href="#" target="_blank" onclick="window.open("","width=500,height=500")">' +
+          '<a href="#" target="_blank" onclick="window.open("#","width=500,height=500")">' +
           respData.lot +
           '</a>';
       }

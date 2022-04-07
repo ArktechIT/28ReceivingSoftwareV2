@@ -97,8 +97,8 @@ header .finish-h5 {
 }
 
 .small-card {
-  width: 30%;
-  height: 30vh;
+  width: 25%;
+  height: 25vh;
   margin: auto;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
@@ -218,11 +218,11 @@ table tbody tr:hover {
   border: none !important;
 }
 
-#fileCount {
+/* #fileCount {
   width: 70px;
   position: absolute;
   border: none;
-  margin-left: 10px;
+  margin-left: -10px;
   font-weight: 600;
   background-color: transparent;
   color: black;
@@ -230,7 +230,7 @@ table tbody tr:hover {
 
 #fileCount:focus {
   outline: none;
-}
+} */
 
 .swal2-input {
   height: 2.25em !important;
@@ -321,7 +321,7 @@ span[class^='dot'] {
 
   .small-card {
     width: 65%;
-    height: 30% !important;
+    height: 23% !important;
   }
 
   .card-body .form-btn,

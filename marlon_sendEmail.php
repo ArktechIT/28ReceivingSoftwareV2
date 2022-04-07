@@ -18,38 +18,12 @@
         </header>
         <div class="card small-card text-center">
             <div class="card-body">
-                <form method="POST" action="marlon_emailPdf.php" id="emailForm">
-                    <?php 
-                        $fileCount = count(glob("pr_temp/" . "*"));
-                        $fileList = glob('pr_temp/*.pdf');
-                        if($fileCount != 0)
-                        {
-                            foreach($fileList as $filename){
-                                if(is_file($filename)){
-                                    echo "<input type='hidden' name='filename[]' value='".substr($filename, 8, 18)."' id='fileName'></input>";
-                                }   
-                            }
-                        } else {
-                            echo "<input type='hidden' name='filename[]' value='' id='fileName'></input>";
-                        }
-                      
-                    ?>
-                    <h3>TOTAL PDF FILES: <input type='text' id="fileCount" value='<?php echo $fileCount;?>' disabled></input></h3>
-                    <h4 class="mt-4"><i id="sendingFilesText"></i></h4>
-                    <button type="submit" class="btn form-btn invisible" name="send" id="send">SEND</button>
-                </form>
+                <h4 class="mt-5"><i id="sendingFilesText"></i></h4>
             </div>
         </div>
     </div>
 	<script src="./assets/js/popper.min.js"></script>
 	<script src="./assets/js/bootstrap.min.js"></script>
 	<script src="./assets/js/script.js"></script>
-    <script>
-        $(document).ready(function () {
-            setTimeout(function(){
-            $('#send').click();
-            }, 3000);
-        });
-    </script>
 </body>
 </html>

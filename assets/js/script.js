@@ -1,3 +1,9 @@
+var d = new Date();
+var month = d.getMonth() + 1;
+var date = d.getDate();
+
+let currentDate = month + '/' + date;
+
 $(document).ready(function () {
   $('.loader').fadeOut(400);
   if (localStorage.content != '') {
@@ -29,31 +35,16 @@ $(document).ready(function () {
       $('.btn-outlined').prop('disabled', false);
     }
   });
-});
 
-//Sending PR via email
-$('#send').on('click', function (e) {
-  var fileCount = $('#fileCount').val();
-  if (fileCount != 0) {
-    $('#sendingFilesText').html(
-      '<i class="text-success">Sending<span class="dot_one">.</span><span class="dot_two">.</span><span class="dot_three">.</span></i>'
-    );
-    var options_add = {
-      url: 'marlon_emailPdf.php',
-      success: function () {
-        $('#sendingFilesText').html('<i class="text-success">Done!</i>');
-        setTimeout(function () {
-          location.reload();
-        }, 3000);
-      },
-    };
-    $('#emailForm').ajaxForm(options_add);
+  if (
+    localStorage.getItem('date') === null ||
+    localStorage.date != currentDate
+  ) {
+    generateReceipt();
   } else {
-    $('#sendingFilesText').html('<i class="text-danger">No Files</i>');
-    e.preventDefault();
-    setTimeout(function () {
-      location.reload();
-    }, 1000 * 60 * 60);
+    $('#sendingFilesText').html(
+      '<i class="text-danger"><small>Try again tomorrow.</small></i>'
+    );
   }
 });
 
@@ -195,6 +186,25 @@ $('#finish-btn').on('click', function (e) {
 });
 
 //-----------------------FUNCTIONS---------------------------//
+function generateReceipt() {
+  $('#sendingFilesText').html(
+    '<i class="text-success">Please wait<span class="dot_one">.</span><span class="dot_two">.</span><span class="dot_three">.</span></i>'
+  );
+
+  setTimeout(function () {
+    $.ajax({
+      url: 'marlon_emailPdf.php?action=generatePR',
+      success: function (response) {
+        localStorage.setItem('date', currentDate);
+        if (response == 1) {
+          $('#sendingFilesText').html('<i class="text-success">Done!</i>');
+        } else {
+          $('#sendingFilesText').html('<i class="text-danger">Empty!</i>');
+        }
+      },
+    });
+  }, 2500);
+}
 
 function getLocationDataList() {
   $.ajax({

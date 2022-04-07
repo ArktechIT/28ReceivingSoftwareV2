@@ -390,7 +390,8 @@ function checkInput() {
 
       if (respData.resp != 'UNKNOWN TAG') {
         link =
-          '<a href="#" target="_blank" onclick="window.open("#","width=500,height=500")">' +
+          // '<a href="#" target="_blank" onclick="window.open("#","width=500,height=500")">' +
+          `<a href="#" onclick="window.open('../16 Lot Details Management Software V4/ace_lotDetails.php?barcode2=${respData.lot}&formDoor[]=1&formDoor[]=2&formDoor[]=3', '_blank', 'toolbar=yes, scrollbars=yes, resizable=yes, top=100, left=100, width=1200, height=600')">` +
           respData.lot +
           '</a>';
       }

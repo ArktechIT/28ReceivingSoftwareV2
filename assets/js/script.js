@@ -1,6 +1,7 @@
 var d = new Date();
 var month = d.getMonth() + 1;
 var date = d.getDate();
+var time = d.getHours() + ':' + d.getMinutes();
 
 let currentDate = month + '/' + date;
 
@@ -40,7 +41,15 @@ $(document).ready(function () {
     localStorage.getItem('date') === null ||
     localStorage.date != currentDate
   ) {
-    generateReceipt();
+    if (time >= '20:00') {
+      generateReceipt();
+    } else {
+      $('#send-h4').removeClass('mt-5');
+      $('#send-h4').addClass('mt-4');
+      $('#sendingFilesText').html(
+        '<i class="text-danger"><small>Sending of Proof of Receipt is unavailable.</small></i>'
+      );
+    }
   } else {
     $('#sendingFilesText').html(
       '<i class="text-danger"><small>Try again tomorrow.</small></i>'
@@ -377,9 +386,19 @@ function checkInput() {
     method: 'POST',
     success: function (response) {
       var respData = JSON.parse(response);
+      var link = '';
+
+      if (respData.resp != 'UNKNOWN TAG') {
+        link =
+          '<a href="#" target="_blank" onclick="window.open("","width=500,height=500")">' +
+          respData.lot +
+          '</a>';
+      }
+
       if (respData.poContentId == 'none') {
         Swal.fire({
           title: respData.resp,
+          html: link,
           icon: 'error',
           confirmButtonColor: '#4a69bd',
           confirmButtonText: 'OK',

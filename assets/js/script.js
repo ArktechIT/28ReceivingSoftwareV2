@@ -49,6 +49,7 @@ $('.btn-outlined').on('click', function (e) {
     lotNumber_array.includes(itemTagsValue)
   ) {
     $('.loader').fadeOut(300);
+    errorSound();
     Swal.fire({
       title: itemTagsValue + ' IS ALREADY EXIST',
       icon: 'error',
@@ -350,6 +351,7 @@ function checkInput() {
       }
 
       if (respData.poContentId == 'none') {
+        errorSound();
         Swal.fire({
           title: respData.resp,
           html: link,
@@ -361,6 +363,7 @@ function checkInput() {
         localStorage.getItem('supplier') != null &&
         respData.supplier != localStorage.supplier
       ) {
+        errorSound();
         Swal.fire({
           title: 'WRONG SUBCON/SUPPLIER',
           icon: 'error',
@@ -368,6 +371,7 @@ function checkInput() {
           confirmButtonText: 'OK',
         });
       } else {
+        successSound();
         $('tbody').prepend(
           '<tr><td><input type="hidden" name="ptag[]" value="' +
             respData.PTAG +
@@ -400,4 +404,16 @@ function checkInput() {
       $('.loader').fadeOut(300);
     },
   });
+}
+
+function successSound() {
+  const successAudio = new Audio('./assets/audio/success.mp3');
+  successAudio.volume = 1;
+  successAudio.play();
+}
+
+function errorSound() {
+  const errorAudio = new Audio('./assets/audio/error.mp3');
+  errorAudio.volume = 0.3;
+  errorAudio.play();
 }

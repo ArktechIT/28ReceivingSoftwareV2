@@ -308,6 +308,7 @@ function countRows() {
   } else {
     $('.form-btn').addClass('disable');
     localStorage.removeItem('supplier');
+    localStorage.removeItem('customer');
     rowCount = 0;
   }
 }
@@ -370,6 +371,18 @@ function checkInput() {
           confirmButtonColor: '#4a69bd',
           confirmButtonText: 'OK',
         });
+      } else if (
+        respData.customer != '' &&
+        localStorage.getItem('customer') != null &&
+        respData.customer != localStorage.customer
+      ) {
+        errorSound();
+        Swal.fire({
+          title: 'WRONG CUSTOMER',
+          icon: 'error',
+          confirmButtonColor: '#4a69bd',
+          confirmButtonText: 'OK',
+        });
       } else {
         successSound();
         $('tbody').prepend(
@@ -396,6 +409,13 @@ function checkInput() {
         if (localStorage.getItem('supplier') === null) {
           localStorage.setItem('supplier', respData.supplier);
           $('#supplier_name').val(localStorage.supplier);
+        }
+
+        if (
+          localStorage.getItem('customer') === null &&
+          respData.customer != ''
+        ) {
+          localStorage.setItem('customer', respData.customer);
         }
       }
       $('.btn-outlined').html('ADD');

@@ -372,18 +372,18 @@ function checkInput() {
           confirmButtonColor: '#4a69bd',
           confirmButtonText: 'OK',
         });
-      } else if (
-        respData.customer != '' &&
-        localStorage.getItem('customer') != null &&
-        respData.customer != localStorage.customer
-      ) {
-        errorSound();
-        Swal.fire({
-          title: 'WRONG CUSTOMER',
-          icon: 'error',
-          confirmButtonColor: '#4a69bd',
-          confirmButtonText: 'OK',
-        });
+      // } else if (
+      //   respData.customer != '' &&
+      //   localStorage.getItem('customer') != null &&
+      //   respData.customer != localStorage.customer
+      // ) {
+      //   errorSound();
+      //   Swal.fire({
+      //     title: 'WRONG CUSTOMER',
+      //     icon: 'error',
+      //     confirmButtonColor: '#4a69bd',
+      //     confirmButtonText: 'OK',
+      //   });
       } else {
         successSound();
         $('tbody').prepend(

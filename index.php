@@ -1,4 +1,5 @@
 <?php
+include $_SERVER['DOCUMENT_ROOT']."/version.php";
     require ('./includes/marlon_session.php');
     require ('./includes/marlon_connection.php');
     $sql = "SELECT 
@@ -34,6 +35,7 @@
         <header>
             <h3>RECEIVING SOFTWARE</h3>
         </header>
+        <a href = "/<?php echo v; ?>/28-1%20Proof%20of%20Receipt/carlo_PoRList.php">Proof of Receipt</a>  <!-- Proof Of Receipt -->
         <div class="user-profile mx-auto text-center">
             <div class="row no-gutters">
                 <div class="col-6">

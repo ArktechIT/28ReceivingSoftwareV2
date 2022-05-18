@@ -9,6 +9,7 @@ $(document).ready(function () {
   $('#supplier_name').val(localStorage.supplier);
 
   countRows();
+  setCurrentContainer();
 
   //check if input is empty
   $('.add-form').on('change keyup', '.search-input', function (e) {
@@ -103,6 +104,12 @@ var quantity = $('input[name="quantity[]"]')
   })
   .get();
 
+var container = $('input[name="container[]"]')
+  .map(function () {
+    return this.value;
+  })
+  .get();
+
 var locationVal = '';
 var bucketVal = '';
 
@@ -111,7 +118,7 @@ $('#finish-btn').on('click', function (e) {
   getBucketDataList();
 
   Swal.fire({
-    html: '<h4>DO YOU WANT TO INPUT A LOCATION?</h4>',
+    html: '<h4>DO YOU WANT TO FINISH RECEIVING?</h4>',
     text: '',
     icon: 'question',
     showDenyButton: true,
@@ -122,51 +129,12 @@ $('#finish-btn').on('click', function (e) {
     allowOutsideClick: false,
   }).then((result) => {
     if (result.isConfirmed) {
-      Swal.fire({
-        title: '',
-        html:
-          '<form method="POST" autocomplete="off"><div class="form-group"><label for="location">Location:</label><input type="text" list="locationList" id="location" name="location" class="swal2-input" placeholder="Location"><datalist id="locationList">' +
-          getLocationDataList() +
-          '</datalist></div><div class="form-group"><label for="bucket">Bucket:&nbsp;&nbsp;&nbsp;</label><input type="text" list="bucketList" id="bucket" name="bucket" class="swal2-input" placeholder="Bucket"></div><datalist id="bucketList">' +
-          getBucketDataList() +
-          '</datalist></div></form>',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#4a69bd',
-
-        focusConfirm: false,
-        allowOutsideClick: false,
-
-        preConfirm: () => {
-          const location = Swal.getPopup().querySelector('#location').value;
-          const bucket = Swal.getPopup().querySelector('#bucket').value;
-
-          var objLocation = $('#locationList').find(
-            "option[value='" + location + "']"
-          );
-          var objBucket = $('#bucketList').find(
-            "option[value='" + bucket + "']"
-          );
-
-          if (objLocation.length == 0 || objBucket.length == 0) {
-            Swal.showValidationMessage(`INVALID LOCATION OR BUCKET`);
-          }
-
-          if (!location || !bucket) {
-            Swal.showValidationMessage(`ALL FIELDS ARE REQUIRED`);
-          }
-          locationVal = location;
-          bucketVal = bucket;
-        },
-      }).then((result) => {
-        checkItem();
-      });
-    } else {
       checkItem();
+      $(this).html('PLEASE WAIT');
+      $(this).addClass('disable');
+      $(this).blur();
     }
-  });
-  $(this).html('PLEASE WAIT');
-  $(this).addClass('disable');
-  $(this).blur();
+  });  
 });
 
 //-----------------------FUNCTIONS---------------------------//
@@ -252,6 +220,7 @@ function finishItems() {
       'item_poNumber[]': item_poNumber,
       'item_desc[]': item_desc,
       'quantity[]': quantity,
+      'container[]': container,
       itemLocation: locationVal,
       itemBucket: bucketVal,
       finishBtn: 1,
@@ -387,17 +356,19 @@ function checkInput() {
       } else {
         successSound();
         $('tbody').prepend(
-          '<tr><td><input type="hidden" name="ptag[]" value="' +
-            respData.PTAG +
-            '"></input><input type="hidden" name="lot[]" value="' +
-            respData.lot +
-            '"></input><input type="hidden" value="' +
-            item_tags +
-            '" name="item_list_input[]"></input><input type="hidden" value="' +
-            respData.poContentId +
-            '" name="poContent_list_input[]"></input><b>' +
-            item_tags +
-            '</b><span><i class="fa fa-times"></i></span></td></tr>'
+          /*html*/`
+            <tr>
+              <td>
+                <input type="hidden" name="ptag[]" value="${respData.PTAG}">
+                <input type="hidden" name="lot[]" value="${respData.lot}">
+                <input type="hidden" name="item_list_input[]" value="${item_tags}">
+                <input type="hidden" name="poContent_list_input[]" value="${respData.poContentId}">
+                <input type="hidden" name="container[]" value="${getCurrentContainer()}">
+                <b>${item_tags} [${getCurrentContainer()}]</b>
+                <span><i class="fa fa-times"></i></span>
+              </td>
+            </tr>
+          `
         );
 
         $('.form-btn').prop('disabled', false);

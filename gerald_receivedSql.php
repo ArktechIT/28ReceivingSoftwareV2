@@ -17,7 +17,7 @@
 	$lotNumberArray = array();
 
 	// $sql = "SELECT poNumber, lotNumber, quantity, itemDescription, returnedQuantity FROM system_receivingHistory WHERE idNumber LIKE '".$employeeId."' AND status = 1";
-	$sql = "SELECT poNumber, lotNumber, quantity, itemDescription, returnedQuantity FROM system_receivingHistory WHERE idNumber LIKE '".$employeeId."' AND batchId = ".$batchId."";
+	$sql = "SELECT poNumber, lotNumber, quantity, itemDescription, returnedQuantity, pallet FROM system_receivingHistory WHERE idNumber LIKE '".$employeeId."' AND batchId = ".$batchId."";
 	$queryReceiving = $db->query($sql);
 	if($queryReceiving->num_rows > 0)
 	{
@@ -28,6 +28,7 @@
 			$quantity = $resultReceiving['quantity'];
 			$itemDescription = $resultReceiving['itemDescription'];
 			$returnedQuantity = $resultReceiving['returnedQuantity'];
+			$pallet = $resultReceiving['pallet'];
 			
 			$lotNumberArray[] = $lotNumber;
 			
@@ -335,13 +336,17 @@
 			}
 			//************************************************** Insert Payables (2019-08-1) **************************************************//
 
-			if(isset($_POST['itemLocation']))
+			// if(isset($_POST['itemLocation']))
+			// {
+			// 	$sqlValuesArray[] = "('".$lotNumber."','".$_POST['itemLocation']."',NOW(), '".$employeeId."', 0)";
+			// }
+			// if(isset($_POST['itemBucket']))
+			// {
+			// 	$sqlValuesArray[] = "('".$lotNumber."','".$_POST['itemBucket']."',NOW(), '".$employeeId."', 1)";
+			// }
+			if($pallet!='')
 			{
-				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['itemLocation']."',NOW(), '".$employeeId."', 0)";
-			}
-			if(isset($_POST['itemBucket']))
-			{
-				$sqlValuesArray[] = "('".$lotNumber."','".$_POST['itemBucket']."',NOW(), '".$employeeId."', 1)";
+				$sqlValuesArray[] = "('".$lotNumber."','".$pallet."',NOW(), '".$employeeId."', 1)";
 			}
 			//$sqlValuesArray[] = $sqlValues;
 			$counter++;

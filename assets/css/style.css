@@ -357,3 +357,14 @@ span[class^='dot'] {
     }
   }
 }
+
+.container__edit {
+  text-decoration: underline;
+  color: blue;
+  cursor:pointer;
+}
+
+.container__name {
+  font-size: 2rem;
+  margin-inline: 1rem;
+}

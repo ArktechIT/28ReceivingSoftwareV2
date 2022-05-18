@@ -59,14 +59,21 @@ include $_SERVER['DOCUMENT_ROOT']."/version.php";
                 <h6>INPUT/SCAN/BARCODE ITEMS:</h6>
                 <form method="POST" action="marlon_finishList.php" class="add-form" autocomplete="off">
                     <div class="input-group">
-                    <input type="text" class="form-control search-input" name="item_tags" id="itemTags" placeholder="Item Tags">
+                        <input type="text" class="form-control search-input" name="item_tags" id="itemTags" placeholder="Item Tags">
                         <div class="input-group-append">
                             <button class="btn btn-outlined add-filter" disabled>ADD</button>
                         </div>
                     </div>
                     <div class="table-list">
-                        <span class="pb-2 top-left">Item(s): <input type="text" class="item-count" id="item-count" tabindex="-1" value="0" readonly></span>
-                        <span class="pb-2 top-right"><input type="text" class="supplier_name" id="supplier_name" tabindex="-1" value="" readonly></span>
+                        <div class="item-container">
+                            <label>Current Container : </label>
+                            <span class="container__name" id='containerId'></span>
+                            <span class="container__edit" id='editContainer'>Edit</span>
+                        </div>
+                        <div>
+                            <span class="pb-2 top-left">Item(s): <input type="text" class="item-count" id="item-count" tabindex="-1" value="0" readonly></span>
+                            <span class="pb-2 top-right"><input type="text" class="supplier_name" id="supplier_name" tabindex="-1" value="" readonly></span>
+                        </div>
                         <table class="table table-bordered table-input" id="validation-table">
                             <tbody>
                             </tbody>
@@ -79,6 +86,7 @@ include $_SERVER['DOCUMENT_ROOT']."/version.php";
     </div>
 	<script src="./assets/js/popper.min.js"></script>
 	<script src="./assets/js/bootstrap.min.js"></script>
+    <script src="./assets/js/gerald_script.js"></script>
     <script src="./assets/js/script.js"></script>
 </body>
 </html>

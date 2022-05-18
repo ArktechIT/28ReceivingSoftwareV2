@@ -5,6 +5,7 @@
     {
         $items = $_POST['item_list_input'];
         $poContentId = $_POST['poContent_list_input'];
+        $container = $_POST['container'];
         $itemList = implode("','" ,$items);
         $n = key(array_slice($items, -1, 1, true));
         if(!empty($items))
@@ -44,6 +45,7 @@
                         <input type="hidden" value="'.$result['poNumber'].'" name="item_poNumber[]"></input>
                         <input type="hidden" value="'.$itemDescription.'" name="item_desc[]"></input>
                         <input type="hidden" value="'.$row['workingQuantity'].'" name="quantity[]"></input>
+                        <input type="hidden" value="'.$container[$n].'" name="container[]"></input>
                         <b>'.$items[$n].'</b>
                         <br><small>'.$row['lotNum'].' | '.$result['poNumber'].' | '.$result['supplierAlias'].'</small>
                         </td>

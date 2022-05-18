@@ -14,6 +14,7 @@
     	$quantity = $_POST['quantity'];
         $location = $_POST['itemLocation'];
         $bucket = $_POST['itemBucket'];
+        $container = $_POST['container'];
         $idNumber = $_SESSION['idNumber'];
         
         //CHECK IF AN ITEM IS ALREADY FINISHED
@@ -35,6 +36,7 @@
             $newPoNumberArray = array();
             $newItemDescArray = array();
             $newQuantityArray = array();
+            $newContainerArray = array();
             while($row = $checkReceivingProcess->fetch_array())
             {
                 $lotNumberKey = array_search($row['lotNumber'], $lotNumber);
@@ -44,6 +46,7 @@
                 array_push($newPoNumberArray, $poNumber[$lotNumberKey]);
                 array_push($newItemDescArray,$itemDesc[$lotNumberKey]);
                 array_push($newQuantityArray,$quantity[$lotNumberKey]);
+                array_push($newContainerArray,$container[$lotNumberKey]);
             }
 
     	    $n = key(array_slice($newLotNumberArray, -1, 1, true));
@@ -91,7 +94,7 @@
                     	'$newQuantityArray[$n]', 
                    		'$newSupplierArray[$n]', 
                     	'$idNumber', 
-                    	' ', 
+                    	'$newContainerArray[$n]', 
                     	'$genbatchId', 
                     	NOW(), 
                     	1
